@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-REPO="Spotroader/yurudesign-template"
+REPO="Spotroader/yrdsgn-template"
 REMOTE="https://github.com/${REPO}.git"
 
 if ! git remote get-url origin &>/dev/null; then
