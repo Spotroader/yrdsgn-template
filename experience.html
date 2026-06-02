@@ -523,7 +523,8 @@ function renderNav(){
 renderNav();
 
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let activeIdx = -1, sceneTriggers = [], jumping = false, lenis = null;
+const HOLD_RATIO = 0.44;
+let activeIdx = -1, sceneTriggers = [], jumping = false, lenis = null, refreshSyncTimer = null;
 
 function getScrollY(){
   if(lenis && typeof lenis.scroll === "number") return lenis.scroll;
@@ -534,7 +535,8 @@ function animateScrollTo(y, duration, onComplete){
   if(Math.abs(y - getScrollY()) < 4){ onComplete?.(); return; }
   if(lenis){
     lenis.scrollTo(y, {
-      duration: duration || 0,
+      immediate: duration <= 0,
+      duration: duration > 0 ? duration : undefined,
       easing: t => 1 - Math.pow(1 - t, 3),
       lock: true,
       onComplete: ()=>{ ScrollTrigger?.update?.(); onComplete?.(); }
@@ -565,10 +567,38 @@ function rebuildFallbackSceneTriggers(){
   });
 }
 
-function sceneScrollTarget(i, ratio = 0.44){
+function sceneScrollTarget(i, ratio = HOLD_RATIO){
   const st = sceneTriggers[i];
   if(!st || st.start == null) return null;
   return st.start + (st.end - st.start) * ratio;
+}
+
+function isScrollInScene(i, y = getScrollY()){
+  const st = getSceneTrigger(i);
+  if(!st || st.start == null) return false;
+  return y >= st.start - 40 && y <= st.end + 40;
+}
+
+function syncSceneHold(i){
+  const st = getSceneTrigger(i);
+  if(!st || st.start == null) return;
+  const target = st.start + (st.end - st.start) * HOLD_RATIO;
+  if(typeof st.scroll === "function"){
+    st.scroll(target);
+  } else {
+    animateScrollTo(target, 0);
+  }
+  ScrollTrigger?.update?.();
+}
+
+function scheduleRefreshPreserve(){
+  clearTimeout(refreshSyncTimer);
+  refreshSyncTimer = setTimeout(()=>{
+    const idx = activeIdx;
+    ScrollTrigger.refresh(true);
+    if(idx >= 0) syncSceneHold(idx);
+    ScrollTrigger.update();
+  }, 60);
 }
 
 function setActive(i){
@@ -594,9 +624,29 @@ function setActive(i){
   if(label) label.textContent = `${i + 1}/${scenes.length} · ${s.cat}`;
 }
 
+function getSceneTrigger(i){
+  const cached = sceneTriggers[i];
+  if(cached && typeof cached.scroll === "function") return cached;
+  const el = document.getElementById("scene-" + i);
+  if(!el) return cached || null;
+  return ScrollTrigger?.getAll?.().find(t => t.trigger === el) || cached || null;
+}
+
 function goToScene(i){
   if(i < 0 || i >= scenes.length) return;
   setActive(i);
+  const st = getSceneTrigger(i);
+  if(st && typeof st.scroll === "function"){
+    jumping = true;
+    const target = st.start + (st.end - st.start) * HOLD_RATIO;
+    st.scroll(target);
+    requestAnimationFrame(()=>{
+      st.scroll(target);
+      ScrollTrigger.update();
+      setTimeout(()=>{ jumping = false; }, 900);
+    });
+    return;
+  }
   let target = sceneScrollTarget(i);
   if(target == null){
     rebuildFallbackSceneTriggers();
@@ -722,7 +772,10 @@ if(window.gsap && !reduce){
     if(!st?.pin || !st.isActive) return;
     const rail = railWidth();
     const w = pinMain?.offsetWidth ?? (innerWidth - rail);
-    gsap.set(st.pin, { left: rail, width: w, maxWidth: w, right: "auto", zIndex: 40 + (st.trigger?.dataset?.i ? +st.trigger.dataset.i : 0) });
+    gsap.set(st.pin, {
+      left: rail, width: w, maxWidth: w, height: "100dvh", maxHeight: "100dvh",
+      right: "auto", zIndex: 40 + (st.trigger?.dataset?.i ? +st.trigger.dataset.i : 0)
+    });
   }
 
   function stackScenePin(st, active){
@@ -848,6 +901,7 @@ if(window.gsap && !reduce){
   }
 
   scenes.forEach((s, i)=> buildSceneTimeline(document.getElementById("scene-"+i), s, i));
+  ScrollTrigger.refresh(true);
 
   /* gsap-interactions: snap to scene sweet spots */
   ScrollTrigger.create({
@@ -856,9 +910,15 @@ if(window.gsap && !reduce){
     end: "bottom bottom",
     snap: {
       snapTo: progress => {
+        if(jumping) return progress;
         const max = ScrollTrigger.maxScroll(window);
-        if(!max || !sceneTriggers.length) return progress;
-        const targets = sceneTriggers.map(st => (st.start + (st.end - st.start) * 0.44) / max);
+        if(!max || !scenes.length) return progress;
+        const targets = scenes.map((_, i) => {
+          const st = getSceneTrigger(i);
+          if(!st || st.start == null) return null;
+          return (st.start + (st.end - st.start) * HOLD_RATIO) / max;
+        }).filter(v => v != null);
+        if(!targets.length) return progress;
         let closest = targets[0];
         let minDist = Math.abs(progress - closest);
         for(const t of targets){
@@ -920,8 +980,17 @@ if(window.gsap && !reduce){
     }
   });
 
+  scenes.forEach((_, i) => {
+    const img = document.querySelector(`#scene-${i} .scene-hero-img`);
+    if(img && !img.complete) img.addEventListener("load", scheduleRefreshPreserve, { once: true });
+  });
+
+  ScrollTrigger.addEventListener("refresh", ()=>{
+    sceneTriggers.forEach(st => alignPinnedScene(st));
+  });
+
   addEventListener("load", ()=>{
-    ScrollTrigger.refresh(true);
+    scheduleRefreshPreserve();
     if(!sceneTriggers.some(Boolean)) rebuildFallbackSceneTriggers();
   });
   } catch(err){
