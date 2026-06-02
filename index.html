@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<!--
+  YuruDesign — Premium e-commerce homepage template (concept)
+  Single self-contained file. External deps: Google Fonts + GSAP CDN only.
+  Built applying: epic-design (scroll/parallax depth) + landing (premium structure)
+  + page-cro / seo-audit fixes from the live-site diagnosis:
+    - Descriptive H1 value proposition + clear primary CTA (was: brand-only H1, no hero CTA)
+    - Price anchoring: list price -> member price + monthly installment microcopy
+    - Eager hero/above-the-fold imagery (was: lazy-load blank on first paint)
+    - Star ratings surfaced on product cards (social proof)
+    - Trust strip elevated above the fold
+  Images are loaded live from the brand CDN for realism.
+-->
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script src="theme.js"></script>
+<title>YuruDesign | Üreticiden Modern & Modüler Mobilya — Ücretsiz Kargo, 2 Yıl Garanti</title>
+<meta name="description" content="Fabrikadan direkt modern mobilya: TV ünitesi, makyaj masası, orta sehpa, kitaplık ve daha fazlası. FSC sertifikalı üretim, ücretsiz hızlı kargo, 2 yıl garanti ve koşulsuz iade." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="impeccable.css" />
+<style>
+  :root{
+    --orange:#e8954a;
+    --orange-soft:#f0a860;
+    --ink:#1c1917;
+    --ink-soft:#44403c;
+    --cream:#faf9f7;
+    --cream-2:#f3f0ea;
+    --line:rgba(28,25,23,.1);
+    --muted:rgba(28,25,23,.58);
+    --white:#fff;
+    --shadow:0 40px 100px -40px rgba(0,0,0,.2),0 0 0 1px rgba(28,25,23,.06);
+    --r:14px;
+    --serif:"Fraunces",Georgia,serif;
+    --sans:"Plus Jakarta Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1240px,92vw);margin-inline:auto}
+  body::before{opacity:.035}
+  .eyebrow{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--orange)}
+  .serif{font-family:var(--serif)}
+  .btn{display:inline-flex;align-items:center;gap:.55em;font-weight:700;font-size:15px;padding:15px 28px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:transform .25s ease,background .25s ease,color .25s ease,box-shadow .25s ease;white-space:nowrap}
+  .btn-primary{background:var(--orange);color:#1a1208;box-shadow:0 14px 30px -12px rgba(232,149,74,.45)}
+  .btn-primary:hover{transform:translateY(-3px);background:#d4843a;box-shadow:0 20px 40px -14px rgba(232,149,74,.55)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--ink);transform:translateY(-3px)}
+  .btn-dark{background:var(--ink);color:#fff}
+  .btn-dark:hover{transform:translateY(-3px);background:#000}
+
+  /* ---------- Promo bar ---------- */
+  .promo{background:var(--orange);color:#1a1208;text-align:center;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;height:38px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .promo .track{display:flex;gap:60px;animation:slide 22s linear infinite;white-space:nowrap}
+  .promo span{display:inline-flex;align-items:center;gap:8px}
+  @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ---------- Header ---------- */
+  header{position:sticky;top:0;z-index:50;background:rgba(246,241,234,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);transition:box-shadow .3s}
+  header.scrolled{box-shadow:0 10px 30px -20px rgba(0,0,0,.4)}
+  .nav{display:flex;align-items:center;gap:28px;height:74px}
+  .logo-link{display:inline-flex;align-items:center;line-height:0;background:transparent}
+  .logo-img{height:34px;width:auto;display:block;background:transparent!important;object-fit:contain}
+  .logo-img--light{display:none}
+  [data-theme="light"] .logo-img--dark{display:none}
+  [data-theme="light"] .logo-img--light{display:block}
+  .logo-on-dark .logo-img--dark{display:block!important}
+  .logo-on-dark .logo-img--light{display:none!important}
+  .menu{display:flex;gap:22px;margin-left:8px;font-size:14.5px;font-weight:600}
+  .menu a{position:relative;padding:6px 0;color:var(--ink-soft);transition:color .2s}
+  .menu a:hover{color:var(--orange)}
+  .menu a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--orange);transition:width .25s}
+  .menu a:hover::after{width:100%}
+  .nav-actions{margin-left:auto;display:flex;align-items:center;gap:18px}
+  .icon-btn{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--white);transition:.2s;position:relative}
+  .icon-btn:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-2px)}
+  .icon-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+  .burger{display:none}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;padding:72px 0 60px;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:0.82fr 1.18fr;gap:clamp(32px,4vw,56px);align-items:center}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,5.6vw,76px);line-height:1.02;letter-spacing:-.02em;margin:18px 0 22px}
+  .hero h1 em{font-style:italic;color:var(--orange)}
+  .hero p.lead{font-size:18px;color:var(--ink-soft);max-width:30em;margin-bottom:30px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+  .hero-trust{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:var(--ink-soft)}
+  .hero-trust span{display:inline-flex;align-items:center;gap:7px}
+  .hero-trust svg{color:var(--orange)}
+  .hero-media{position:relative;display:block;width:100%}
+  .hero-media .blob{position:absolute;pointer-events:none;z-index:0;border-radius:50%}
+  .hero-vitrine{
+    position:relative;width:100%;height:auto;z-index:1;
+    aspect-ratio:16/9;
+    border-radius:clamp(18px,2.4vw,28px);
+    overflow:hidden;
+    box-shadow:0 48px 96px -32px rgba(0,0,0,.48),0 0 0 1px rgba(28,25,23,.08);
+    background:#141210;
+    transform:rotate(-1deg);
+    will-change:transform;
+  }
+  .hero-video-wrap{
+    position:absolute;inset:0;overflow:hidden;
+    transform-origin:center center;
+  }
+  .hero-video{
+    display:block;width:100%;height:100%;
+    object-fit:cover;object-position:center center;
+    opacity:0;transition:opacity .7s ease;
+    will-change:transform,opacity,filter;
+  }
+  .hero-video.is-ready{opacity:1}
+  @media(prefers-reduced-motion:reduce){
+    .hero-video{display:none}
+    .hero-video-fallback{display:block!important}
+  }
+  .hero-video-fallback{
+    position:absolute;inset:0;z-index:1;display:none;
+    width:100%;height:100%;object-fit:cover;object-position:center 58%;
+  }
+  .hero-vitrine-vignette{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:
+      radial-gradient(ellipse 92% 88% at 50% 50%, transparent 42%, rgba(0,0,0,.16) 100%),
+      linear-gradient(to top, rgba(0,0,0,.1) 0%, transparent 38%);
+  }
+  .hero-shine{
+    position:absolute;inset:-60%;z-index:3;pointer-events:none;
+    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.14) 50%,transparent 60%);
+    transform:translateX(-130%) skewX(-12deg);
+    mix-blend-mode:soft-light;
+  }
+  .hero-slide-badge{
+    position:absolute;top:14px;left:14px;z-index:6;
+    font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    background:rgba(255,255,255,.92);color:var(--orange);padding:6px 10px;border-radius:6px;
+    border:1px solid var(--line);opacity:0;
+  }
+  .hero-slide-badge.is-visible{opacity:1}
+  .blob-a{width:320px;height:320px;background:radial-gradient(circle,rgba(238,90,36,.35),transparent 70%);top:-40px;right:-30px}
+  .blob-b{width:260px;height:260px;background:radial-gradient(circle,rgba(238,90,36,.18),transparent 70%);bottom:-30px;left:-40px}
+  .float-card{position:absolute;background:var(--white);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;z-index:8}
+  .float-card .dot{width:38px;height:38px;border-radius:11px;background:var(--cream-2);display:grid;place-items:center;color:var(--orange)}
+  .fc-1{left:-26px;top:24%}
+  .fc-2{right:-22px;bottom:16%}
+  .fc-2 b{color:var(--orange)}
+
+  /* ---------- Trust strip ---------- */
+  .trust{background:var(--ink);color:#fff;padding:30px 0}
+  .trust-row{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+  .trust-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.82)}
+  .trust-item img{height:42px;width:auto;filter:brightness(0) invert(1);opacity:.92}
+
+  /* ---------- Section heading ---------- */
+  .sec{padding:96px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:42px}
+  .sec-head h2{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3.6vw,48px);line-height:1.05;letter-spacing:-.02em}
+  .sec-head h2 em{font-style:italic;color:var(--orange);font-weight:400}
+  .sec-head p{color:var(--muted);max-width:34em;margin-top:8px}
+
+  /* ---------- Collections ---------- */
+  .coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .coll{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:3/4;box-shadow:var(--shadow);cursor:pointer}
+  .coll img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+  .coll:hover img{transform:scale(1.07)}
+  .coll::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,7,4,.78),rgba(10,7,4,.05) 55%)}
+  .coll .cap{position:absolute;left:22px;bottom:20px;right:22px;z-index:2;color:#fff}
+  .coll .cap h3{font-family:var(--serif);font-weight:500;font-size:26px}
+  .coll .cap span{font-size:13px;opacity:.85;display:inline-flex;align-items:center;gap:6px;font-weight:600}
+  .coll.big{grid-row:span 2;aspect-ratio:auto}
+
+  /* ---------- Products ---------- */
+  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+  .card .ph{position:relative;aspect-ratio:1/1;overflow:hidden;background:var(--cream-2)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+  .card:hover .ph img{transform:scale(1.05)}
+  .tag{position:absolute;top:12px;left:12px;background:#1f8a4c;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.03em}
+  .tag.disc{background:var(--orange);left:auto;right:12px}
+  .wish{position:absolute;bottom:12px;right:12px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;opacity:0;transform:translateY(6px);transition:.25s;color:var(--ink)}
+  .card:hover .wish{opacity:1;transform:none}
+  .wish:hover{color:var(--orange)}
+  .card .body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .stars{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+  .stars .s{color:#f5a623;letter-spacing:1px}
+  .card h3{font-size:15px;font-weight:600;line-height:1.35;min-height:2.7em}
+  .price-row{display:flex;align-items:baseline;gap:10px;margin-top:auto}
+  .price-row .old{color:var(--muted);text-decoration:line-through;font-size:13.5px}
+  .price-row .now{color:var(--orange);font-weight:800;font-size:19px}
+  .installment{font-size:12px;color:var(--ink-soft);font-weight:600}
+  .installment b{color:var(--ink)}
+  .card .atc{margin-top:10px;width:100%;justify-content:center;font-size:14px;padding:12px}
+
+  /* ---------- Categories chips ---------- */
+  .cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .cat{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:0;text-align:center;font-weight:600;font-size:14px;transition:.25s;display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:hidden}
+  .cat:hover{transform:translateY(-4px);border-color:var(--orange);color:var(--orange)}
+  .cat .thumb{display:block;aspect-ratio:4/5;overflow:hidden;background:var(--cream-2)}
+  .cat .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+  .cat:hover .thumb img{transform:scale(1.04)}
+  .cat .label{padding:14px 10px}
+
+  /* ---------- Story band ---------- */
+  .story{position:relative;color:#fff;overflow:hidden;border-radius:0}
+  .story .bg{position:absolute;inset:0;z-index:-2}
+  .story .bg img{width:100%;height:120%;object-fit:cover}
+  .story::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,7,4,.9),rgba(10,7,4,.45));z-index:-1}
+  .story .inner{padding:120px 0;max-width:34em}
+  .story h2{font-family:var(--serif);font-weight:500;font-size:clamp(32px,4vw,54px);line-height:1.05;margin:14px 0 20px}
+  .story p{color:rgba(255,255,255,.82);font-size:17px;margin-bottom:28px}
+  .story .stats{display:flex;gap:40px;margin-top:34px}
+  .story .stats b{font-family:var(--serif);font-size:40px;font-weight:500;display:block;color:var(--orange-soft)}
+  .story .stats span{font-size:13px;color:rgba(255,255,255,.7);font-weight:600}
+
+  /* ---------- Reviews ---------- */
+  .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .rev{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:14px}
+  .rev .s{color:#f5a623;font-size:15px;letter-spacing:2px}
+  .rev p{font-size:15.5px;color:var(--ink-soft)}
+  .rev .who{display:flex;align-items:center;gap:12px;margin-top:auto}
+  .rev .av{width:42px;height:42px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:700}
+  .rev .who b{font-size:14px}
+  .rev .who span{font-size:12px;color:var(--muted);display:block}
+
+  /* ---------- Member CTA ---------- */
+  .member{background:var(--cream-2);border-radius:28px;padding:64px;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
+  .member h2{font-family:var(--serif);font-weight:500;font-size:clamp(28px,3.4vw,44px);line-height:1.05;margin-bottom:14px}
+  .member p{color:var(--ink-soft);margin-bottom:24px;max-width:30em}
+  .member form{display:flex;gap:10px;flex-wrap:wrap}
+  .member input{flex:1;min-width:220px;padding:15px 20px;border-radius:999px;border:1.5px solid var(--line);font:inherit;background:var(--white)}
+  .member input:focus{outline:none;border-color:var(--orange)}
+  .member .deco{position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(238,90,36,.22),transparent 70%)}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--ink);color:rgba(255,255,255,.72);padding:72px 0 32px;margin-top:0}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+  footer .logo-link{margin-bottom:4px}
+  footer h4{color:#fff;font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px;font-weight:700}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:11px;font-size:14px}
+  footer a:hover{color:var(--orange-soft)}
+  footer .intro p{font-size:14px;margin:16px 0 20px;max-width:30em}
+  .soc{display:flex;gap:10px}
+  .soc a{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;transition:.2s}
+  .soc a:hover{background:var(--orange);border-color:var(--orange);color:#fff}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:24px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:13px}
+  .pays{display:flex;gap:8px;align-items:center}
+  .pays .p{background:rgba(255,255,255,.1);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;letter-spacing:.04em}
+
+  .reveal{opacity:0;transform:translateY(34px)}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:1080px){
+    .prod-grid{grid-template-columns:repeat(2,1fr)}
+    .trust-row{grid-template-columns:repeat(3,1fr);gap:26px}
+    .cat-grid{grid-template-columns:repeat(3,1fr)}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:860px){
+    .menu{display:none}
+    .burger{display:grid}
+    .nav{height:64px;gap:14px}
+    .nav-actions .icon-btn:not(.burger):not([data-theme-toggle]){display:none}
+    .logo-img{height:28px}
+    .hero-grid{grid-template-columns:1fr}
+    .hero-media{
+      order:-1;width:100vw;max-width:100vw;
+      margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
+      padding:0 clamp(12px,3vw,20px);
+    }
+    .hero-vitrine{width:100%;aspect-ratio:16/9;transform:none;border-radius:clamp(14px,2.5vw,22px)}
+    .coll-grid{grid-template-columns:1fr 1fr}
+    .coll.big{grid-row:auto;aspect-ratio:3/4}
+    .rev-grid{grid-template-columns:1fr}
+    .member{grid-template-columns:1fr;padding:40px}
+    .sec{padding:64px 0}
+    .float-card{display:none}
+  }
+  @media(max-width:560px){
+    .wrap{width:min(1240px,94vw)}
+    .hero h1{font-size:clamp(32px,9vw,44px)}
+    .hero-cta .btn{width:100%;justify-content:center}
+    .sec-head{flex-direction:column;align-items:flex-start}
+    .coll-grid{grid-template-columns:1fr}
+    .cat-grid{grid-template-columns:repeat(2,1fr)}
+    .trust-row{grid-template-columns:repeat(2,1fr)}
+    .foot-grid{grid-template-columns:1fr}
+    .story .stats{gap:24px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+  }
+
+  /* dark mode (synced via theme.js) */
+  html[data-theme="dark"]{
+    --cream:#09090b;--cream-2:#111113;--ink:#f4f4f5;--ink-soft:rgba(244,244,245,.72);
+    --muted:rgba(244,244,245,.55);--line:rgba(255,255,255,.1);--white:#141416;
+    --shadow:0 40px 100px -40px rgba(0,0,0,.55);
+  }
+  html[data-theme="dark"] header{background:rgba(9,9,11,.88)}
+  html[data-theme="dark"] .trust{background:#0c0c0e}
+  html[data-theme="dark"] .float-card{color:var(--ink)}
+  html[data-theme="dark"] .btn-ghost{color:var(--ink-soft)}
+  html[data-theme="dark"] .btn-dark{background:var(--accent);color:#1a1208}
+  html[data-theme="dark"] .member input{background:var(--white);color:var(--ink)}
+  html[data-theme="light"] body::before{opacity:.025}
+  html[data-theme="dark"] body::before{opacity:.04}
+</style>
+</head>
+<body>
+
+<!-- PROMO BAR -->
+<div class="promo">
+  <div class="track">
+    <span>🏭 Fabrikadan Direkt Satış — En İyi Fiyat</span>
+    <span>🚚 Türkiye Geneli Ücretsiz Hızlı Kargo</span>
+    <span>🛡️ 2 Yıl Garanti & Koşulsuz İade</span>
+    <span>💳 12 Aya Varan Taksit İmkânı</span>
+    <span>🏭 Fabrikadan Direkt Satış — En İyi Fiyat</span>
+    <span>🚚 Türkiye Geneli Ücretsiz Hızlı Kargo</span>
+    <span>🛡️ 2 Yıl Garanti & Koşulsuz İade</span>
+    <span>💳 12 Aya Varan Taksit İmkânı</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="wrap nav">
+    <a class="logo-link" href="#" aria-label="YuruDesign">
+      <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+      <img class="logo-img logo-img--light" src="assets/logo-yurudesign.png?v=4" alt="" aria-hidden="true" width="132" height="51" decoding="async" />
+    </a>
+    <nav class="menu">
+      <a href="experience.html" style="color:var(--orange)">Deneyim ✦</a>
+      <a href="#collections">Koleksiyonlar</a>
+      <a href="#bestsellers">Çok Satanlar</a>
+      <a href="#categories">Kategoriler</a>
+      <a href="#story">Üreticiden</a>
+      <a href="#reviews">Yorumlar</a>
+    </nav>
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Tema değiştir">
+        <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Ara"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+      <button class="icon-btn" aria-label="Hesabım"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
+      <button class="icon-btn" aria-label="Sepetim"><span class="badge">2</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6 5 3H2"/></svg></button>
+      <button class="icon-btn burger" type="button" data-menu-toggle aria-controls="mobileMenu" aria-expanded="false" aria-label="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <div class="mobile-menu__backdrop"></div>
+  <nav class="mobile-menu__panel" aria-label="Mobil menü">
+    <button type="button" data-close>Kapat</button>
+    <a href="experience.html">Deneyim</a>
+    <a href="category.html?cat=tv">Mağaza</a>
+    <a href="#collections">Koleksiyonlar</a>
+    <a href="#bestsellers">Çok Satanlar</a>
+    <a href="#categories">Kategoriler</a>
+    <a href="#story">Üreticiden</a>
+    <a href="#reviews">Yorumlar</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Üreticiden • 2014'ten beri</span>
+      <h1 id="heroTitle">Evin Her Köşesine <em>Mobilya</em></h1>
+      <p class="lead" id="heroLead">Modüler, fonksiyonel ve zamansız tasarımlar — aracısız, fabrikadan direkt en iyi fiyatla. 20.000 m² üretim tesisi, FSC sertifikalı sürdürülebilir üretim.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="experience.html">Sinematik Turu Başlat
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#bestsellers">Tüm ürünler</a>
+        <a class="btn btn-dark" href="#story">Neden YuruDesign?</a>
+      </div>
+      <div class="hero-trust">
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Ücretsiz Hızlı Kargo</span>
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> 2 Yıl Garanti</span>
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Koşulsuz İade</span>
+      </div>
+    </div>
+    <div class="hero-media">
+      <div class="blob blob-a" aria-hidden="true"></div>
+      <div class="blob blob-b" aria-hidden="true"></div>
+      <div class="hero-vitrine" id="heroVitrine">
+        <div class="hero-video-wrap" id="heroVideoWrap">
+          <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
+            poster="https://yurudesgin.b-cdn.net/wp-content/uploads/2026/05/SD1-CS-1XX.jpg"
+            aria-label="YuruDesign modüler mobilya — ürün vitrin videosu">
+            <source src="assets/video/hero-product-loop.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <img class="hero-video-fallback" id="heroVideoFallback" src="https://yurudesgin.b-cdn.net/wp-content/uploads/2026/05/SD1-CS-1XX.jpg" alt="Sedra TV ünitesi" fetchpriority="high" />
+        <div class="hero-vitrine-vignette" aria-hidden="true"></div>
+        <div class="hero-shine" aria-hidden="true"></div>
+        <span class="hero-slide-badge is-visible" id="heroBadge">CANLI VİTRİN</span>
+      </div>
+      <div class="float-card fc-1">
+        <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9 12 2l9 7v11a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span>
+        <div>Fabrika Teslim<br><span style="color:var(--muted);font-weight:600">5 iş günü kapında</span></div>
+      </div>
+      <div class="float-card fc-2">
+        <span class="dot">★</span>
+        <div><b>4.8/5</b> • 3.200+ yorum<br><span style="color:var(--muted);font-weight:600">Mutlu müşteri</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<section class="trust">
+  <div class="wrap trust-row">
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/1-Kosulsuz-Iade-ve-Parca-Destegi-Garantisi.png" alt="" />Koşulsuz İade &amp; Parça Desteği</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/2-ucretsiz-Hizli-Kargo.png" alt="" />Ücretsiz Hızlı Kargo</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/3-Kolay-Kurulum-Kopya.png" alt="" />Kolay Kurulum</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/4-100-Guvenli-odeme-copy.png" alt="" />%100 Güvenli Ödeme</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/5-2-yil-garanti.png" alt="" />2 Yıl Garanti</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/sertifika.png" alt="" />FSC Sertifikalı Üretim</div>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<section class="sec" id="collections">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Koleksiyonlar</span>
+        <h2>Her odaya bir karakter</h2>
+        <p>Birbirini tamamlayan modüler serilerle evinizi baştan sona aynı dilde tasarlayın.</p>
+      </div>
+      <a class="btn btn-ghost" href="#collections">Tüm koleksiyonlar</a>
+    </div>
+    <div class="coll-grid" id="collGrid"></div>
+  </div>
+</section>
+
+<!-- BESTSELLERS -->
+<section class="sec" id="bestsellers" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Çok Satanlar</span>
+        <h2>En çok tercih edilenler</h2>
+        <p>Üye fiyatları ve 12 aya varan taksit avantajıyla — fabrikadan direkt.</p>
+      </div>
+      <a class="btn btn-ghost" href="category.html?cat=tv">Tümünü gör</a>
+    </div>
+    <div class="prod-grid" id="prodGrid"></div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="sec" id="categories">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Kategoriler</span>
+        <h2>Değişime nereden başlamalı?<br><em>Keşfedin.</em></h2>
+      </div>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story" id="story">
+  <div class="bg" aria-hidden="true"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2026/05/MD6-CS-2XX.jpg" alt="" loading="lazy" /></div>
+  <div class="wrap">
+    <div class="inner reveal">
+      <span class="eyebrow" style="color:var(--orange-soft)">Üreticiden</span>
+      <h2>Aradaki herkesi çıkardık. Sadece siz ve fabrika.</h2>
+      <p>2014'ten beri modern estetiği TV ünitesi, çalışma masası, kitaplık ve orta sehpa gibi ürünlerle buluşturuyoruz. Kendi üretimimiz olduğu için kaliteyi yükseltip fiyatı düşürüyoruz — aradaki marj sizde kalıyor.</p>
+      <a class="btn btn-primary" href="#">Hikâyemizi okuyun</a>
+      <div class="stats">
+        <div><b>10+</b><span>Yıllık üretim</span></div>
+        <div><b>500+</b><span>Ürün modeli</span></div>
+        <div><b>FSC</b><span>Sertifikalı ahşap</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div><span class="eyebrow">Müşteri Yorumları</span><h2>4.8/5 — 3.200+ değerlendirme</h2></div>
+    </div>
+    <div class="rev-grid" id="revGrid"></div>
+  </div>
+</section>
+
+<!-- MEMBER CTA -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="member reveal">
+      <span class="deco" aria-hidden="true"></span>
+      <div>
+        <span class="eyebrow">Üyelik avantajı</span>
+        <h2>Üye olun, sepette özel indirimi kapın</h2>
+        <p>Ücretsiz üyelikle özel fiyatlardan yararlanın, yeni koleksiyonlardan ilk siz haberdar olun.</p>
+        <form onsubmit="return false">
+          <input type="email" placeholder="E-posta adresiniz" aria-label="E-posta" />
+          <button class="btn btn-dark" type="submit">Üye Ol &amp; İndirimi Kap</button>
+        </form>
+      </div>
+      <div style="text-align:center">
+        <div style="font-family:var(--serif);font-size:64px;color:var(--orange);line-height:1">%10</div>
+        <div style="font-weight:700">ilk siparişe özel üye indirimi</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="intro">
+        <a class="logo-link logo-on-dark" href="index.html" aria-label="YuruDesign">
+          <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+        </a>
+        <p>Üreticiden modern, modüler ve zamansız mobilya. FSC sertifikalı üretim, ücretsiz kargo ve 2 yıl garanti.</p>
+        <div class="soc">
+          <a href="#" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h-3a4 4 0 0 0-4 4v3H5v4h3v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4"/></svg></a>
+        </div>
+      </div>
+      <div><h4>Kurumsal</h4><ul><li><a href="#">Hakkımızda</a></li><li><a href="#">Blog</a></li><li><a href="#">Kariyer</a></li><li><a href="#">Bayilik &amp; Toptan</a></li><li><a href="#">İletişim</a></li></ul></div>
+      <div><h4>Yardım</h4><ul><li><a href="#">Siparişini Takip Et</a></li><li><a href="#">İade &amp; Gönderim</a></li><li><a href="#">S.S.S.</a></li><li><a href="#">Müşteri Yorumları</a></li></ul></div>
+      <div><h4>Yasal</h4><ul><li><a href="#">Mesafeli Satış Sözleşmesi</a></li><li><a href="#">Gizlilik &amp; Güvenlik</a></li><li><a href="#">Kullanım Koşulları</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 YuruDesign Mobilya. Tüm hakları saklıdır. · Konsept template</span>
+      <div class="pays"><span class="p">VISA</span><span class="p">MASTERCARD</span><span class="p">TROY</span><span class="p">12 TAKSİT</span></div>
+    </div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  const { categories, collections } = window.YURU_CATALOG;
+  const collBlurbs = {
+    dune: "Doğal jüt & ahşap dokular",
+    nord: "İskandinav sadeliği",
+    monroe: "Hollywood aydınlatma",
+    sedra: "Kumsal tonları",
+    mood: "Sıcak & davetkâr",
+    future: "Çizgisel & cesur",
+    ocean: "Ferah & modern"
+  };
+  const catIcons = {
+    tv: "M3 7h18v4H3zM5 11v8M19 11v8M3 19h18",
+    makyaj: "M6 3h12v6H6zM9 9v9M15 9v9M5 21h14",
+    sehpa: "M4 9h16v3H4zM6 12v7M18 12v7",
+    kitaplik: "M5 3h14v18H5zM5 8h14M5 13h14",
+    konsol: "M3 8h18v6H3zM6 14v5M18 14v5",
+    kahve: "M6 2h12v4H6zM8 6v14M16 6v14M4 6h16",
+    calisma: "M3 9h18M5 9v10M19 9v10M4 9l2-4h12l2 4"
+  };
+  const reviews = [
+    {t:"Kargo çok hızlıydı, ürün görseldekiyle birebir aynı. Montaj gerçekten kolaydı.", n:"Elif K.", c:"İstanbul", a:"E"},
+    {t:"Fabrikadan direkt olunca fiyat avantajı ciddi. Ahşap kalitesi beklediğimden iyi.", n:"Murat A.", c:"Ankara", a:"M"},
+    {t:"Üye indirimiyle çok uygun aldım, 12 taksit de işimi gördü. Tekrar alırım.", n:"Zeynep T.", c:"İzmir", a:"Z"}
+  ];
+
+  document.getElementById("collGrid").innerHTML = collections.map((col, i) => `
+    <a class="coll ${i === 0 ? "big" : ""} reveal" href="${col.url}">
+      <img src="${col.image}" alt="${col.name} koleksiyonu" loading="lazy" />
+      <div class="cap"><h3>${col.name} Collection</h3><span>${collBlurbs[col.slug] || "Keşfet"} →</span></div>
+    </a>`).join("");
+
+  document.getElementById("prodGrid").innerHTML = YURU_bestsellers().map(p => `
+    <article class="card reveal">
+      <a class="ph" href="${YURU_productUrl(p.id)}">
+        ${p.badge ? `<span class="tag">${p.badge}</span>` : ""}
+        <span class="tag disc">Üye %10</span>
+        <img src="${p.img}" alt="${p.name}" loading="lazy" />
+        <button class="wish" aria-label="İstek listesi">♡</button>
+      </a>
+      <div class="body">
+        <div class="stars"><span class="s">${YURU_stars(p.r)}</span> ${p.r}${p.c ? ` (${p.c})` : ""}</div>
+        <a href="${YURU_productUrl(p.id)}"><h3>${p.name}</h3></a>
+        <div class="price-row"><span class="old">${p.old} ₺</span><span class="now">${p.now} ₺</span></div>
+        <div class="installment">12 ay <b>${YURU_installment(p.now)} ₺</b> taksitle</div>
+        <a class="btn btn-primary atc" href="${YURU_productUrl(p.id)}">Sepete ekle</a>
+      </div>
+    </article>`).join("");
+
+  document.getElementById("catGrid").innerHTML = categories.map(c => `
+    <a class="cat reveal" href="${YURU_categoryUrl(c.slug)}">
+      <span class="thumb"><img src="${c.image}" alt="${c.name}" loading="lazy" /></span>
+      <span class="label">${c.name}</span>
+    </a>`).join("");
+
+  document.getElementById("revGrid").innerHTML = reviews.map(r => `
+    <div class="rev reveal">
+      <div class="s">★★★★★</div>
+      <p>“${r.t}”</p>
+      <div class="who"><span class="av">${r.a}</span><div><b>${r.n}</b><span>${r.c} · Doğrulanmış alıcı</span></div></div>
+    </div>`).join("");
+
+  // ---------- Hero video (product loop) ----------
+  (function initHeroVideo(){
+    const vid = document.getElementById("heroVideo");
+    const wrap = document.getElementById("heroVideoWrap");
+    const vitrine = document.getElementById("heroVitrine");
+    const fallback = document.getElementById("heroVideoFallback");
+    if(!vid) return;
+
+    const syncAspect = () => {
+      if(!vitrine || !vid.videoWidth || !vid.videoHeight) return;
+      vitrine.style.aspectRatio = `${vid.videoWidth} / ${vid.videoHeight}`;
+    };
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduce){
+      vid.removeAttribute("autoplay");
+      vid.pause();
+      if(fallback) fallback.style.display = "block";
+      syncAspect();
+      return;
+    }
+
+    const markReady = () => {
+      vid.classList.add("is-ready");
+      syncAspect();
+    };
+    const play = () => vid.play().then(markReady).catch(()=>{
+      if(fallback) fallback.style.display = "block";
+    });
+
+    vid.addEventListener("loadedmetadata", () => { syncAspect(); play(); }, { once: true });
+    if(vid.readyState >= 1) syncAspect();
+    if(vid.readyState >= 2) play();
+    else vid.addEventListener("loadeddata", play, { once: true });
+
+    document.addEventListener("visibilitychange", () => {
+      if(document.hidden) vid.pause();
+      else if(!reduce) play();
+    });
+  })();
+
+  // ---------- Header shadow on scroll ----------
+  const hdr = document.getElementById("hdr");
+  addEventListener("scroll", ()=> hdr.classList.toggle("scrolled", scrollY>10));
+
+  // ---------- Animations ----------
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!reduce && window.gsap){
+    gsap.registerPlugin(ScrollTrigger);
+    // hero entrance
+    gsap.set([".hero .eyebrow",".hero h1",".hero .lead",".hero-cta",".hero-trust"],{opacity:0,y:30});
+    gsap.set("#heroVitrine",{opacity:0,scale:.9,y:40,rotateY:-8});
+    gsap.set("#heroVideoWrap",{scale:1.02});
+    gsap.set("#heroVideo",{scale:1,filter:"blur(0px) brightness(1)"});
+    const tl = gsap.timeline({defaults:{ease:"power3.out"}});
+    tl.to(".hero .eyebrow",{opacity:1,y:0,duration:.5})
+      .to(".hero h1",{opacity:1,y:0,duration:.8},"-=.2")
+      .to(".hero .lead",{opacity:1,y:0,duration:.6},"-=.5")
+      .to(".hero-cta",{opacity:1,y:0,duration:.5},"-=.4")
+      .to(".hero-trust",{opacity:1,y:0,duration:.5},"-=.35")
+      .to("#heroVitrine",{opacity:1,scale:1,y:0,rotateY:0,duration:1.05,ease:"power3.out"},"-=.85")
+      .to("#heroVideoWrap",{scale:1,duration:.9,ease:"power2.out"},"-=.9");
+    gsap.to("#heroVideoWrap",{scale:1.03,duration:9,ease:"sine.inOut",repeat:-1,yoyo:true,delay:2.2});
+    gsap.to(".hero-shine",{x:"220%",duration:1.4,ease:"power2.inOut",delay:1.2,repeat:-1,repeatDelay:5});
+    gsap.to("#heroVitrine",{y:-10,rotateY:2,duration:4.5,ease:"sine.inOut",repeat:-1,yoyo:true,delay:1.6});
+    gsap.fromTo(".float-card",{opacity:0,y:18},{opacity:1,y:0,duration:.6,stagger:.15,delay:1});
+    gsap.fromTo("#heroBadge",{opacity:0,y:-10,scale:.88},{opacity:1,y:0,scale:1,duration:.5,delay:1.1,ease:"back.out(2)"});
+
+    // scroll reveals
+    gsap.utils.toArray(".reveal").forEach(el=>{
+      gsap.to(el,{opacity:1,y:0,duration:.8,ease:"power2.out",
+        scrollTrigger:{trigger:el,start:"top 86%"}});
+    });
+
+    // hero vitrine parallax on scroll
+    gsap.to("#heroVitrine",{y:-40,scale:1.04,rotateY:-4,ease:"none",
+      scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:.8}});
+
+    // story bg parallax
+    gsap.to(".story .bg img",{yPercent:-12,ease:"none",
+      scrollTrigger:{trigger:".story",start:"top bottom",end:"bottom top",scrub:true}});
+
+    // mouse parallax on hero
+    const hero = document.querySelector(".hero");
+    const vitrine = document.getElementById("heroVitrine");
+    hero.addEventListener("mousemove",e=>{
+      const x=(e.clientX/innerWidth-.5)*2, y=(e.clientY/innerHeight-.5)*2;
+      gsap.to(".blob-a",{x:x*40,y:y*24,duration:.8});
+      gsap.to(".blob-b",{x:x*-30,y:y*-18,duration:.8});
+      gsap.to(".float-card",{x:x*10,y:y*8,duration:.8});
+      if(vitrine) gsap.to(vitrine,{rotateY:x*4,rotateX:-y*3,duration:.7,ease:"power2.out",overwrite:"auto"});
+    });
+    hero.addEventListener("mouseleave",()=>{
+      if(vitrine) gsap.to(vitrine,{rotateY:0,rotateX:0,duration:.9,ease:"power2.out"});
+    });
+  } else {
+    document.querySelectorAll(".reveal").forEach(e=>{e.style.opacity=1;e.style.transform="none"});
+  }
+</script>
+<script src="mobile.js"></script>
+</body>
+</html>

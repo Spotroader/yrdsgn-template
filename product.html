@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<!--
+  YuruDesign — Product Detail Page (PDP) template (concept)
+  Built with skills-boss: page-cro (PDP framework) + pricing-strategy (transparent
+  anchoring + installment) + copywriting (benefit-led, no hype).
+  PDP fixes from the diagnosis:
+    - Transparent member price (list -> member + %), not hidden until cart
+    - Installment microcopy at the price
+    - Star rating + review breakdown surfaced at top
+    - Color VARIANTS as swatches on ONE page (was: each color a separate PDP -> diluted SEO/reviews)
+    - Trust badges + delivery estimate + stock urgency near the CTA
+    - Sticky buy box on desktop
+-->
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script src="theme.js"></script>
+<title>Sedra TV Ünitesi Sehpası 3 Kapaklı Ahşap Ayaklı 150cm | YuruDesign</title>
+<meta name="description" content="Sedra TV ünitesi — modüler, ahşap ayaklı, 150cm. FSC sertifikalı üretim, ücretsiz hızlı kargo, 2 yıl garanti, koşulsuz iade. Üye fiyatı ve 12 aya varan taksit." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="impeccable.css" />
+<style>
+  :root{
+    --orange:#e8954a;--orange-soft:#f0a860;--ink:#1c1917;--ink-soft:#44403c;
+    --cream:#faf9f7;--cream-2:#f3f0ea;--line:rgba(28,25,23,.1);--muted:rgba(28,25,23,.58);
+    --white:#fff;--shadow:0 40px 100px -40px rgba(0,0,0,.25);--r:14px;
+    --serif:"Fraunces",Georgia,serif;--sans:"Plus Jakarta Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",monospace;
+  }
+  body{background:var(--cream)}
+  body::before{opacity:.03}
+  .eyebrow{font-family:var(--mono);letter-spacing:.14em}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1240px,92vw);margin-inline:auto}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--orange)}
+  .serif{font-family:var(--serif)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;font-weight:700;font-size:15px;padding:15px 28px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:transform .25s,background .25s,color .25s,box-shadow .25s;white-space:nowrap}
+  .btn-primary{background:var(--orange);color:#fff;box-shadow:0 14px 30px -12px rgba(238,90,36,.7)}
+  .btn-primary:hover{transform:translateY(-3px);background:#e24a14}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--ink)}
+
+  /* promo + header (shared) */
+  .promo{background:var(--orange);color:#fff;text-align:center;font-size:13px;font-weight:600;height:38px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .promo .track{display:flex;gap:60px;animation:slide 22s linear infinite;white-space:nowrap}
+  @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  header{position:sticky;top:0;z-index:50;background:rgba(246,241,234,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;gap:28px;height:74px}
+  .logo-link{display:inline-flex;align-items:center;line-height:0;background:transparent}
+  .logo-img{height:34px;width:auto;display:block;background:transparent!important;object-fit:contain}
+  .logo-img--light{display:none}
+  [data-theme="light"] .logo-img--dark{display:none}
+  [data-theme="light"] .logo-img--light{display:block}
+  .logo-on-dark .logo-img--dark{display:block!important}
+  .logo-on-dark .logo-img--light{display:none!important}
+  .menu{display:flex;gap:22px;margin-left:8px;font-size:14.5px;font-weight:600}
+  .menu a{color:var(--ink-soft)} .menu a:hover{color:var(--orange)}
+  .menu a.experience{color:var(--orange)}
+  .nav-actions{margin-left:auto;display:flex;gap:16px}
+  .icon-btn{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--white);position:relative;transition:.2s}
+  .icon-btn:hover{border-color:var(--orange);color:var(--orange)}
+  .icon-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+  .burger{display:none}
+
+  /* breadcrumb */
+  .crumb{font-size:13px;color:var(--muted);padding:22px 0 4px;display:flex;gap:8px;flex-wrap:wrap}
+  .crumb a:hover{color:var(--orange)}
+
+  /* cinematic PDP hero */
+  .pdp-hero{position:relative;height:min(58vh,520px);background:#09090b;color:#f4f4f5;overflow:hidden}
+  .pdp-hero .bg{position:absolute;inset:0}
+  .pdp-hero .bg img{width:100%;height:100%;object-fit:cover;opacity:.28}
+  .pdp-hero .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,#09090b 0%,rgba(9,9,11,.6) 45%,rgba(9,9,11,.2) 100%)}
+  .pdp-hero .inner{position:relative;z-index:2;height:100%;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;
+    width:min(1240px,92vw);margin-inline:auto;padding:80px 0 40px}
+  .pdp-hero .copy .eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+  .pdp-hero .copy h2{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4vw,48px);line-height:1.05;letter-spacing:-.025em;color:#fff}
+  .pdp-hero .copy p{margin-top:12px;color:rgba(244,244,245,.62);font-size:15px;max-width:36ch}
+  .pdp-hero .stage{justify-self:center;width:min(360px,44vw);will-change:transform}
+  @media(max-width:860px){
+    .pdp-hero .inner{grid-template-columns:1fr;text-align:center;padding-top:100px}
+    .pdp-hero .stage{width:min(300px,78vw);justify-self:center;order:-1}
+    .pdp-hero .copy p{margin-inline:auto}
+  }
+
+  /* PDP layout */
+  .pdp{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;padding:14px 0 70px;align-items:start}
+
+  /* gallery */
+  .gallery{position:sticky;top:96px}
+  .gmain{border-radius:22px;overflow:hidden;background:var(--cream-2);aspect-ratio:1/1;box-shadow:var(--shadow);position:relative}
+  .gmain img{width:100%;height:100%;object-fit:cover}
+  .gmain .flag{position:absolute;top:16px;left:16px;background:#1f8a4c;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px}
+  .thumbs{display:flex;gap:12px;margin-top:14px}
+  .thumbs button{width:84px;height:84px;border-radius:14px;overflow:hidden;border:2px solid transparent;background:var(--cream-2);cursor:pointer;padding:0}
+  .thumbs button.active{border-color:var(--orange)}
+  .thumbs img{width:100%;height:100%;object-fit:cover}
+
+  /* buy box */
+  .buy h1{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3vw,38px);line-height:1.08;letter-spacing:-.01em;margin-bottom:10px}
+  .sub{color:var(--ink-soft);font-size:15.5px;margin-bottom:14px}
+  .ratingline{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);margin-bottom:18px}
+  .ratingline .s{color:#f5a623;letter-spacing:1px;font-size:16px}
+  .ratingline a{color:var(--ink-soft);text-decoration:underline;text-underline-offset:2px}
+  .pricebox{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}
+  .price-main{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .price-main .now{color:var(--orange);font-weight:800;font-size:34px;letter-spacing:-.02em}
+  .price-main .old{color:var(--muted);text-decoration:line-through;font-size:18px}
+  .price-main .save{background:rgba(238,90,36,.12);color:var(--orange);font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px}
+  .member-note{font-size:13.5px;color:var(--ink-soft);margin-top:8px;display:flex;align-items:center;gap:8px}
+  .member-note b{color:var(--ink)}
+  .installment{margin-top:10px;font-size:14px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+  .installment b{color:var(--ink)}
+
+  .opt-label{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}
+  .opt-label span{color:var(--ink);text-transform:none;letter-spacing:0;font-weight:600;margin-left:6px}
+  .swatches{display:flex;gap:10px;margin-bottom:20px}
+  .swatch{width:54px;height:54px;border-radius:12px;border:2px solid transparent;cursor:pointer;overflow:hidden;background:var(--cream-2);position:relative;padding:0}
+  .swatch img{width:100%;height:100%;object-fit:cover}
+  .swatch.active{border-color:var(--orange)}
+  .swatch .chk{position:absolute;inset:0;display:none}
+
+  .qty-row{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+  .qty{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:var(--white)}
+  .qty button{width:44px;height:48px;border:none;background:none;font-size:20px;cursor:pointer;color:var(--ink)}
+  .qty input{width:44px;text-align:center;border:none;font:inherit;font-weight:700;background:none}
+  .qty input:focus{outline:none}
+  .cta-row{display:flex;gap:12px;margin-bottom:18px}
+  .cta-row .btn-primary{flex:1;font-size:16px;padding:17px}
+  .icon-wish{width:54px;border:1.5px solid var(--line);border-radius:999px;background:var(--white);cursor:pointer;display:grid;place-items:center;font-size:20px;transition:.2s}
+  .icon-wish:hover{border-color:var(--orange);color:var(--orange)}
+
+  .assure{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .assure div{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;color:var(--ink-soft)}
+  .assure svg{color:var(--orange);flex:none}
+  .deliver{background:var(--cream-2);border-radius:12px;padding:14px 16px;font-size:14px;display:flex;align-items:center;gap:10px}
+  .deliver b{color:var(--ink)}
+  .stock{font-size:13px;color:#1f8a4c;font-weight:700;margin-top:12px;display:flex;align-items:center;gap:8px}
+  .stock .bar{flex:1;height:6px;border-radius:3px;background:rgba(31,138,76,.18);overflow:hidden;max-width:160px}
+  .stock .bar i{display:block;height:100%;width:28%;background:#1f8a4c}
+
+  /* trust strip */
+  .trust{background:var(--ink);color:#fff;padding:26px 0}
+  .trust-row{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+  .trust-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.82)}
+  .trust-item img{height:40px;filter:brightness(0) invert(1);opacity:.92}
+
+  /* tabs */
+  .sec{padding:64px 0}
+  .tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin-bottom:30px;flex-wrap:wrap}
+  .tab{padding:14px 20px;font-weight:700;font-size:15px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.active{color:var(--ink);border-color:var(--orange)}
+  .panel{display:none;max-width:820px;animation:fade .4s}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .panel h3{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 0 14px}
+  .panel p{color:var(--ink-soft);margin-bottom:14px}
+  .spec{width:100%;border-collapse:collapse}
+  .spec tr{border-bottom:1px solid var(--line)}
+  .spec td{padding:13px 4px;font-size:14.5px}
+  .spec td:first-child{color:var(--muted);width:40%}
+  .spec td:last-child{font-weight:600}
+
+  /* reviews */
+  .rev-head{display:grid;grid-template-columns:240px 1fr;gap:40px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:28px;margin-bottom:26px}
+  .rev-score{text-align:center}
+  .rev-score b{font-family:var(--serif);font-size:58px;font-weight:500;line-height:1}
+  .rev-score .s{color:#f5a623;font-size:18px;letter-spacing:2px;display:block;margin:6px 0}
+  .rev-score span{font-size:13px;color:var(--muted)}
+  .bars{display:flex;flex-direction:column;gap:8px}
+  .barline{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+  .barline .bar{flex:1;height:8px;border-radius:4px;background:var(--cream-2);overflow:hidden}
+  .barline .bar i{display:block;height:100%;background:#f5a623}
+  .rev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .rev{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:10px}
+  .rev .s{color:#f5a623;letter-spacing:2px}
+  .rev p{font-size:15px;color:var(--ink-soft)}
+  .rev .who{display:flex;align-items:center;gap:10px;margin-top:auto;font-size:13px}
+  .rev .av{width:38px;height:38px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:700}
+  .rev .who span{color:var(--muted);display:block;font-size:12px}
+
+  /* related */
+  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+  .card .ph{aspect-ratio:1/1;overflow:hidden;background:var(--cream-2)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+  .card:hover .ph img{transform:scale(1.05)}
+  .card .body{padding:14px;display:flex;flex-direction:column;gap:7px}
+  .card .stars{font-size:12px;color:var(--muted)} .card .stars .s{color:#f5a623}
+  .card h4{font-size:14px;font-weight:600;line-height:1.35;min-height:2.7em}
+  .card .pr{display:flex;align-items:baseline;gap:8px}
+  .card .pr .old{color:var(--muted);text-decoration:line-through;font-size:12.5px}
+  .card .pr .now{color:var(--orange);font-weight:800;font-size:16px}
+
+  .sec-title{font-family:var(--serif);font-weight:500;font-size:32px;margin-bottom:26px}
+
+  footer{background:var(--ink);color:rgba(255,255,255,.72);padding:60px 0 28px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px;margin-bottom:40px}
+  footer .logo-link{margin-bottom:4px} footer h4{color:#fff;font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;font-weight:700}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px}
+  footer a:hover{color:var(--orange-soft)}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:22px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+  .pays{display:flex;gap:8px} .pays .p{background:rgba(255,255,255,.1);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700}
+
+  @media(max-width:980px){
+    .pdp{grid-template-columns:1fr;gap:30px}
+    .gallery{position:static}
+    .prod-grid{grid-template-columns:repeat(2,1fr)}
+    .rev-grid{grid-template-columns:1fr}
+    .trust-row{grid-template-columns:repeat(3,1fr);gap:24px}
+    .menu{display:none}
+    .burger{display:grid}
+    .nav{height:64px}
+    .nav-actions .icon-btn:not(.burger):not([data-theme-toggle]){display:none}
+    .logo-img{height:28px}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:560px){
+    .prod-grid{grid-template-columns:1fr}
+    .pdp-hero .inner{padding-top:88px}
+    .rev-head{grid-template-columns:1fr;text-align:center}
+    .assure{grid-template-columns:1fr}
+    .trust-row{grid-template-columns:repeat(2,1fr)}
+    .foot-grid{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+  html[data-theme="dark"]{
+    --cream:#09090b;--cream-2:#111113;--ink:#f4f4f5;--ink-soft:rgba(244,244,245,.72);
+    --muted:rgba(244,244,245,.55);--line:rgba(255,255,255,.1);--white:#141416;
+    --shadow:0 40px 100px -40px rgba(0,0,0,.55);
+  }
+  html[data-theme="dark"] header{background:rgba(9,9,11,.88)}
+  html[data-theme="dark"] .pricebox{background:var(--white)}
+  html[data-theme="dark"] .qty,.icon-wish{background:var(--white)}
+  html[data-theme="dark"] .deliver{background:var(--cream-2)}
+  html[data-theme="dark"] .rev-head,html[data-theme="dark"] .rev{background:var(--white)}
+  html[data-theme="dark"] .related .card{background:var(--white)}
+  html[data-theme="light"] .pdp-hero{background:#1c1917}
+</style>
+</head>
+<body>
+
+<div class="promo"><div class="track">
+  <span>🚚 Türkiye Geneli Ücretsiz Hızlı Kargo</span><span>🛡️ 2 Yıl Garanti & Koşulsuz İade</span><span>💳 12 Aya Varan Taksit</span><span>🏭 Fabrikadan Direkt — En İyi Fiyat</span>
+  <span>🚚 Türkiye Geneli Ücretsiz Hızlı Kargo</span><span>🛡️ 2 Yıl Garanti & Koşulsuz İade</span><span>💳 12 Aya Varan Taksit</span><span>🏭 Fabrikadan Direkt — En İyi Fiyat</span>
+</div></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo-link" href="index.html" aria-label="YuruDesign">
+      <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+      <img class="logo-img logo-img--light" src="assets/logo-yurudesign.png?v=4" alt="" aria-hidden="true" width="132" height="51" decoding="async" />
+    </a>
+    <nav class="menu">
+      <a href="experience.html" class="experience">Deneyim ✦</a>
+      <a href="index.html#collections">Koleksiyonlar</a><a href="category.html?cat=tv">Mağaza</a>
+      <a href="index.html#categories">Kategoriler</a><a href="index.html#story">Üreticiden</a>
+    </nav>
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Tema değiştir">
+        <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Ara"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+      <button class="icon-btn" aria-label="Hesabım"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
+      <button class="icon-btn" aria-label="Sepetim"><span class="badge">2</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6 5 3H2"/></svg></button>
+      <button class="icon-btn burger" type="button" data-menu-toggle aria-controls="mobileMenu" aria-expanded="false" aria-label="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <div class="mobile-menu__backdrop"></div>
+  <nav class="mobile-menu__panel" aria-label="Mobil menü">
+    <button type="button" data-close>Kapat</button>
+    <a href="experience.html">Deneyim</a>
+    <a href="category.html?cat=tv">Mağaza</a>
+    <a href="index.html#collections">Koleksiyonlar</a>
+    <a href="index.html#categories">Kategoriler</a>
+    <a href="index.html#story">Üreticiden</a>
+  </nav>
+</div>
+
+<section class="pdp-hero" id="pdpHero">
+  <div class="bg"><img id="heroBg" src="" alt="" fetchpriority="high" /></div>
+  <div class="inner">
+    <div class="copy">
+      <div class="eyebrow" id="heroEyebrow">—</div>
+      <h2 class="serif" id="heroHeadline">—</h2>
+      <p id="heroDesc">—</p>
+    </div>
+    <div class="stage preview-frame" id="pdpHeroImg">
+      <div class="preview-chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <span class="url" id="heroUrl">YuruDesign · Ürün</span>
+      </div>
+      <div class="preview-body">
+        <img id="heroProductImg" src="" alt="" fetchpriority="high" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <nav class="crumb" id="crumb">
+    <a href="index.html">Ana sayfa</a> › <a href="category.html?cat=tv">TV Ünitesi</a> › <span id="crumbProduct">—</span>
+  </nav>
+
+  <div class="pdp">
+    <!-- GALLERY -->
+    <div class="gallery">
+      <div class="gmain">
+        <span class="flag" id="pdpFlag" hidden>YENİ</span>
+        <img id="mainImg" src="" alt="" fetchpriority="high" />
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+
+    <!-- BUY BOX -->
+    <div class="buy">
+      <h1 id="pdpTitle">—</h1>
+      <p class="sub" id="pdpSub">—</p>
+      <div class="ratingline" id="ratingLine"></div>
+
+      <div class="pricebox">
+        <div class="price-main">
+          <span class="now" id="priceNow">—</span>
+          <span class="old" id="priceOld">—</span>
+          <span class="save" id="priceSave">%10 indirim</span>
+        </div>
+        <div class="member-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <span id="memberNote"><b>Üye fiyatı</b> — ücretsiz üyelikle bu fiyata gelir.</span>
+        </div>
+        <div class="installment">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          <span id="installmentLine">12 ay taksit · faizsiz</span>
+        </div>
+      </div>
+
+      <p class="opt-label" id="swatchLabel" hidden>Renk:<span></span></p>
+      <div class="swatches" id="swatches"></div>
+
+      <div class="qty-row">
+        <div class="qty">
+          <button onclick="q(-1)" aria-label="Azalt">−</button>
+          <input id="qtyInput" value="1" inputmode="numeric" aria-label="Adet" />
+          <button onclick="q(1)" aria-label="Arttır">+</button>
+        </div>
+        <span style="font-size:13.5px;color:var(--muted)">Stokta · 5 iş günü içinde kargoda</span>
+      </div>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" id="ctaBtn" href="#">Sepete ekle</a>
+        <button class="icon-wish" aria-label="İstek listesine ekle">♡</button>
+      </div>
+
+      <div class="assure">
+        <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Ücretsiz hızlı kargo</div>
+        <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5z"/></svg> 2 yıl garanti</div>
+        <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9M3 12l3-3M3 12l3 3"/></svg> 14 gün koşulsuz iade</div>
+        <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> %100 güvenli ödeme</div>
+      </div>
+
+      <div class="deliver">
+        🚚 <span><b>Ücretsiz kargo:</b> Yurtiçi Kargo &amp; Ceva Lojistik ile kapınıza kadar — tahmini teslim <b>5 iş günü</b>.</span>
+      </div>
+
+      <div class="stock">
+        <span>Son birkaç adet — bu hafta 18 kişi inceledi</span>
+        <span class="bar"><i></i></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST STRIP -->
+<section class="trust">
+  <div class="wrap trust-row">
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/1-Kosulsuz-Iade-ve-Parca-Destegi-Garantisi.png" alt="" />Koşulsuz İade &amp; Parça Desteği</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/2-ucretsiz-Hizli-Kargo.png" alt="" />Ücretsiz Hızlı Kargo</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/3-Kolay-Kurulum-Kopya.png" alt="" />Kolay Kurulum</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/4-100-Guvenli-odeme-copy.png" alt="" />%100 Güvenli Ödeme</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/5-2-yil-garanti.png" alt="" />2 Yıl Garanti</div>
+    <div class="trust-item"><img src="https://yurudesgin.b-cdn.net/wp-content/uploads/2024/05/sertifika.png" alt="" />FSC Sertifikalı Üretim</div>
+  </div>
+</section>
+
+<!-- TABS -->
+<section class="sec"><div class="wrap">
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-t="desc">Ürün Açıklaması</div>
+    <div class="tab" data-t="spec">Teknik Özellikler</div>
+    <div class="tab" data-t="ship">Kargo &amp; İade</div>
+    <div class="tab" data-t="rev">Değerlendirmeler</div>
+  </div>
+
+  <div class="panel active" data-p="desc">
+    <h3>Salonunuzun merkezine yakışan sadelik</h3>
+    <p>Sedra TV ünitesi, modern salonların ihtiyacı olan iki şeyi bir arada sunar: bol saklama alanı ve hafif, ferah bir görünüm. Üç kapaklı bölme medya cihazlarını ve dağınık kabloları gözden uzak tutarken, açılı masif ahşap ayaklar zeminle arasında nefes alan bir boşluk bırakır.</p>
+    <p>150 cm genişliğiyle 55"–65" televizyonlar için idealdir. Çizilmeye dayanıklı melamin yüzey, günlük kullanımda ilk günkü görünümünü korur. Modüler Sedra serisinin diğer parçalarıyla (orta sehpa, konsol, kitaplık) aynı dili konuşur.</p>
+  </div>
+
+  <div class="panel" data-p="spec">
+    <h3>Teknik Özellikler</h3>
+    <table class="spec">
+      <tr><td>Seri</td><td>Sedra Collection</td></tr>
+      <tr><td>Ürün kodu</td><td>SD3-CS</td></tr>
+      <tr><td>Genişlik</td><td>150 cm</td></tr>
+      <tr><td>Malzeme</td><td>Melamin gövde · masif ahşap ayak</td></tr>
+      <tr><td>Renk</td><td>Kumsal-Sepet</td></tr>
+      <tr><td>Bölme</td><td>3 kapaklı saklama</td></tr>
+      <tr><td>Sertifika</td><td>FSC sürdürülebilir orman ürünü</td></tr>
+      <tr><td>Kurulum</td><td>Kolay montaj · talimat ve vida dahil</td></tr>
+    </table>
+  </div>
+
+  <div class="panel" data-p="ship">
+    <h3>Kargo &amp; İade</h3>
+    <p><b>Ücretsiz hızlı kargo:</b> Türkiye'nin dört bir yanına Yurtiçi Kargo ve Ceva Lojistik ile gönderim. Siparişiniz 5 iş günü içinde kargoya verilir, kapınıza kadar teslim edilir.</p>
+    <p><b>14 gün koşulsuz iade:</b> Beğenmezseniz 14 gün içinde iade edebilirsiniz. Eksik veya hasarlı parça desteği garanti kapsamındadır.</p>
+    <p><b>Temizlik:</b> Hafif nemli bezle silin; kimyasal temizleyici kullanmayın.</p>
+  </div>
+
+  <div class="panel" data-p="rev" id="reviews">
+    <div class="rev-head">
+      <div class="rev-score">
+        <b>4.9</b><span class="s">★★★★★</span><span>128 değerlendirme</span>
+      </div>
+      <div class="bars">
+        <div class="barline">5★ <span class="bar"><i style="width:86%"></i></span> 110</div>
+        <div class="barline">4★ <span class="bar"><i style="width:11%"></i></span> 14</div>
+        <div class="barline">3★ <span class="bar"><i style="width:2%"></i></span> 3</div>
+        <div class="barline">2★ <span class="bar"><i style="width:1%"></i></span> 1</div>
+        <div class="barline">1★ <span class="bar"><i style="width:0%"></i></span> 0</div>
+      </div>
+    </div>
+    <div class="rev-grid">
+      <div class="rev"><div class="s">★★★★★</div><p>“Görseldekiyle birebir aynı geldi. Montajı tek başıma 20 dakikada yaptım, ahşap ayaklar çok şık duruyor.”</p><div class="who"><span class="av">E</span><div><b>Elif K.</b><span>İstanbul · Doğrulanmış alıcı</span></div></div></div>
+      <div class="rev"><div class="s">★★★★★</div><p>“Fabrikadan direkt olunca fiyatı gerçekten uygun. 12 taksit de cabası. 65 inç TV rahat sığdı.”</p><div class="who"><span class="av">M</span><div><b>Murat A.</b><span>Ankara · Doğrulanmış alıcı</span></div></div></div>
+      <div class="rev"><div class="s">★★★★☆</div><p>“Kalitesi beklediğimden iyi. Kargo söz verilen sürede geldi, paketleme sağlamdı.”</p><div class="who"><span class="av">Z</span><div><b>Zeynep T.</b><span>İzmir · Doğrulanmış alıcı</span></div></div></div>
+      <div class="rev"><div class="s">★★★★★</div><p>“Salondaki konsol ve sehpayla aynı seriden aldım, hepsi uyumlu. Çok memnunum.”</p><div class="who"><span class="av">B</span><div><b>Burak D.</b><span>Bursa · Doğrulanmış alıcı</span></div></div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- RELATED -->
+<section class="sec" style="background:var(--cream-2)"><div class="wrap">
+  <h2 class="sec-title">Bu seriyle tamamlayın</h2>
+  <div class="prod-grid" id="related"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot-grid">
+    <div>
+      <a class="logo-link logo-on-dark" href="index.html" aria-label="YuruDesign">
+        <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+      </a>
+      <p style="font-size:14px;margin:14px 0 0;max-width:30em">Üreticiden modern, modüler ve zamansız mobilya. FSC sertifikalı üretim, ücretsiz kargo ve 2 yıl garanti.</p>
+    </div>
+    <div><h4>Kurumsal</h4><ul><li><a href="#">Hakkımızda</a></li><li><a href="#">Blog</a></li><li><a href="#">Bayilik &amp; Toptan</a></li><li><a href="#">İletişim</a></li></ul></div>
+    <div><h4>Yardım</h4><ul><li><a href="#">Siparişini Takip Et</a></li><li><a href="#">İade &amp; Gönderim</a></li><li><a href="#">S.S.S.</a></li></ul></div>
+    <div><h4>Yasal</h4><ul><li><a href="#">Mesafeli Satış Sözleşmesi</a></li><li><a href="#">Gizlilik &amp; Güvenlik</a></li><li><a href="#">Kullanım Koşulları</a></li></ul></div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 YuruDesign Mobilya · Konsept template</span>
+    <div class="pays"><span class="p">VISA</span><span class="p">MASTERCARD</span><span class="p">TROY</span><span class="p">12 TAKSİT</span></div>
+  </div>
+</div></footer>
+
+<script src="data.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const productId = params.get("id") || "86096";
+  const { categories, products } = window.YURU_CATALOG;
+  const product = YURU_getProduct(productId) || products[0];
+  const cat = categories.find(c => c.slug === product.cat) || categories[0];
+  const galleries = {
+    "86096": [
+      "https://yurudesgin.b-cdn.net/wp-content/uploads/2026/02/Sedra-Tv-Unitesi-150cm-SD3-CS-1-1024x1024.jpg",
+      "https://yurudesgin.b-cdn.net/wp-content/uploads/2026/02/Sedra-Tv-Unitesi-150cm-SD3-CS-2-1-1024x1024.jpg",
+      "https://yurudesgin.b-cdn.net/wp-content/uploads/2026/02/Sedra-Tv-Unitesi-150cm-SD3-CS-3-1-1024x1024.jpg",
+      "https://yurudesgin.b-cdn.net/wp-content/uploads/2026/02/SD3-CS-1X.jpg"
+    ]
+  };
+  const imgs = galleries[product.id] || [product.img];
+  const shortName = product.name.split(" ").slice(-1)[0] || product.name;
+
+  document.title = `${product.name} | YuruDesign`;
+  document.querySelector('meta[name="description"]').content =
+    `${product.name} — üye fiyatı ${product.now} ₺, ücretsiz kargo, 2 yıl garanti, koşulsuz iade.`;
+
+  document.getElementById("heroBg").src = cat.room || product.img;
+  document.getElementById("heroEyebrow").textContent = `${cat.name} · YuruDesign`;
+  document.getElementById("heroHeadline").innerHTML = cat.tagline.replace(/ (.+)/, "<br>$1");
+  document.getElementById("heroDesc").textContent = product.name;
+  document.getElementById("heroUrl").textContent = `YuruDesign · ${cat.name}`;
+  document.getElementById("heroProductImg").src = product.img;
+  document.getElementById("heroProductImg").alt = product.name;
+
+  document.getElementById("crumb").innerHTML =
+    `<a href="index.html">Ana sayfa</a> › <a href="category.html?cat=${cat.slug}">${cat.name}</a> › <span>${shortName}</span>`;
+
+  const flag = document.getElementById("pdpFlag");
+  if (product.badge) { flag.textContent = product.badge; flag.hidden = false; }
+
+  const main = document.getElementById("mainImg");
+  main.src = imgs[0];
+  main.alt = product.name;
+  document.getElementById("thumbs").innerHTML = imgs.map((src, i) =>
+    `<button class="${i ? "" : "active"}"><img src="${src}" alt="Görünüm ${i + 1}" /></button>`
+  ).join("");
+
+  document.getElementById("pdpTitle").textContent = product.name;
+  document.getElementById("pdpSub").textContent =
+    `${cat.name} kategorisinde modüler YuruDesign üretimi. Ücretsiz hızlı kargo, 2 yıl garanti, koşulsuz iade.`;
+
+  document.getElementById("ratingLine").innerHTML =
+    `<span class="s">${YURU_stars(product.r)}</span> <b style="color:var(--ink)">${product.r}</b>` +
+    (product.c ? ` <a href="#reviews">${product.c} değerlendirme</a>` : "");
+
+  document.getElementById("priceNow").textContent = `${product.now} ₺`;
+  document.getElementById("priceOld").textContent = `${product.old} ₺`;
+  document.getElementById("memberNote").innerHTML =
+    `<b>Üye fiyatı</b> — ücretsiz üyelikle bu fiyata gelir. Liste fiyatı ${product.old} ₺.`;
+  document.getElementById("installmentLine").innerHTML =
+    `12 ay <b>${YURU_installment(product.now)} ₺</b> taksitle · faizsiz`;
+
+  const cta = document.getElementById("ctaBtn");
+  cta.href = "#";
+  cta.textContent = `Sepete ekle — ${product.now} ₺`;
+
+  // gallery thumbs
+  document.querySelectorAll("#thumbs button").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll("#thumbs button").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      main.src = b.querySelector("img").src;
+    });
+  });
+
+  // qty
+  function q(d){const i=document.getElementById("qtyInput");i.value=Math.max(1,(parseInt(i.value)||1)+d);}
+  window.q = q;
+
+  // tabs
+  document.querySelectorAll("#tabs .tab").forEach(t=>{
+    t.addEventListener("click",()=>{
+      document.querySelectorAll("#tabs .tab").forEach(x=>x.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+      t.classList.add("active");
+      document.querySelector(`.panel[data-p="${t.dataset.t}"]`).classList.add("active");
+    });
+  });
+
+  // related products
+  const related = products.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 4);
+  document.getElementById("related").innerHTML = related.map(p => `
+    <a class="card" href="${YURU_productUrl(p.id)}">
+      <div class="ph"><img src="${p.img}" alt="${p.name}" loading="lazy" /></div>
+      <div class="body">
+        <div class="stars"><span class="s">${YURU_stars(p.r)}</span> ${p.r}${p.c ? ` (${p.c})` : ""}</div>
+        <h4>${p.name}</h4>
+        <div class="pr"><span class="old">${p.old} ₺</span><span class="now">${p.now} ₺</span></div>
+      </div>
+    </a>`).join("");
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+  if(window.gsap && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+    gsap.registerPlugin(ScrollTrigger);
+    const stage = document.getElementById("pdpHeroImg");
+    gsap.fromTo(stage, {scale:0.72, y:40, opacity:0}, {scale:1, y:0, opacity:1, duration:1, ease:"power2.out"});
+    gsap.to(stage, {scale:1.08, ease:"none", scrollTrigger:{trigger:"#pdpHero", start:"top top", end:"bottom top", scrub:1}});
+    gsap.to(".pdp-hero .bg img", {scale:1.15, ease:"none", scrollTrigger:{trigger:"#pdpHero", start:"top top", end:"bottom top", scrub:true}});
+  }
+</script>
+<script src="mobile.js"></script>
+</body>
+</html>

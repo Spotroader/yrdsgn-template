@@ -1,0 +1,24 @@
+---
+description: YuruDesign 1 approved baseline — experience rail, pin layout, vitrine size. Reference before changing experience.html or impeccable.css sidebar.
+globs:
+  - yurudesign-template/**/*
+  - experience.html
+  - impeccable.css
+  - index.html
+  - category.html
+alwaysApply: false
+---
+
+# YuruDesign 1 baseline
+
+Milestone tag: **yurudesign-1** (see `docs/YURUDESIGN-1.md`).
+
+When fixing experience/category/index, preserve unless user asks otherwise:
+
+1. Sol kategori rail — click → `active` + scroll to scene
+2. Pin alignment — `left: var(--rail-w)`, no double-offset drift
+3. Vitrine size — large hero in scene grid (not capped at ~540px)
+4. Pin duration ~172% desktop — avoid reintroducing long empty scroll gaps
+5. Surgical fixes only — see `skills/surgical-fix/SKILL.md`
+
+Do not break working pages when touching shared CSS or GSAP init order.

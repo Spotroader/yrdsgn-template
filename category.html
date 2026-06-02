@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!--
+  YuruDesign — Kategori (Impeccable register + gsap-interactions)
+-->
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script src="theme.js"></script>
+<title>Kategori | YuruDesign</title>
+<meta name="description" content="YuruDesign kategori ürünleri — üye fiyatları, 12 ay taksit, ücretsiz kargo." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="impeccable.css" />
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <a class="logo-link" href="index.html" aria-label="YuruDesign">
+      <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+      <img class="logo-img logo-img--light" src="assets/logo-yurudesign.png?v=4" alt="" aria-hidden="true" width="132" height="51" decoding="async" />
+    </a>
+    <div class="sidebar-sub">Mağaza · Kategoriler</div>
+    <div class="theme-row">
+      <span>Tema</span>
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Tema değiştir">
+        <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="cat-list" id="catList" data-lenis-prevent></nav>
+  <div class="sidebar-foot">
+    <a class="btn-accent" href="experience.html" style="justify-content:center;width:100%">Deneyim →</a>
+    <a class="btn-ghost-line" href="index.html" style="justify-content:center;width:100%">Ana sayfa</a>
+  </div>
+</aside>
+
+<header class="mobile-header" aria-label="Site">
+  <a class="logo-link" href="index.html" aria-label="YuruDesign">
+    <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+    <img class="logo-img logo-img--light" src="assets/logo-yurudesign.png?v=4" alt="" aria-hidden="true" width="132" height="51" decoding="async" />
+  </a>
+  <button type="button" class="theme-toggle" data-theme-toggle aria-label="Tema değiştir">
+    <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+<nav class="mobile-dock" id="mobileDock" aria-label="Kategoriler"></nav>
+
+<main class="main with-mobile-bar">
+  <div class="section-grad" aria-hidden="true">
+    <div class="grad-orb a"></div>
+    <div class="grad-orb c"></div>
+  </div>
+
+  <section class="cat-hero" id="catHero">
+    <div class="bg"><img id="heroBg" src="" alt="" /></div>
+    <div class="inner">
+      <div class="tag" id="heroEyebrow">Kategori</div>
+      <h1 id="heroTitle">—</h1>
+      <p id="heroDesc">—</p>
+      <div class="actions">
+        <a class="btn-accent" href="experience.html">Deneyimde gör</a>
+        <a class="btn-ghost-line" href="index.html#bestsellers">Tüm mağaza</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <div class="count"><b id="prodCount">0</b> ürün</div>
+    <select id="sort" aria-label="Sıralama">
+      <option value="popular">En popüler</option>
+      <option value="price-asc">Fiyat: düşük → yüksek</option>
+      <option value="price-desc">Fiyat: yüksek → düşük</option>
+      <option value="rating">En yüksek puan</option>
+    </select>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="product-grid" id="grid"></div>
+    <div class="empty-state" id="empty" hidden>Bu kategoride henüz ürün yok.</div>
+  </div>
+</main>
+
+<script src="data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+const { categories, products } = window.YURU_CATALOG;
+const params = new URLSearchParams(location.search);
+const collectionSlug = params.get("collection");
+let activeSlug = params.get("cat") || (collectionSlug ? null : categories[0].slug);
+
+function productCount(slug){ return products.filter(p => p.cat === slug).length; }
+
+function collectionLabel(slug){
+  const col = window.YURU_CATALOG.collections.find(c => c.slug === slug);
+  return col ? `${col.name} Collection` : slug;
+}
+
+function productsForView(){
+  if(collectionSlug){
+    const key = collectionSlug.toLowerCase();
+    return products.filter(p => p.name.toLowerCase().includes(key));
+  }
+  return products.filter(p => p.cat === activeSlug);
+}
+
+function renderNav(){
+  const firstImg = slug => {
+    const p = products.find(x => x.cat === slug);
+    return p ? p.img : categories.find(c => c.slug === slug)?.room;
+  };
+  const html = mobile => categories.map(c => `
+    <button type="button" data-slug="${c.slug}" class="cat-btn ${c.slug === activeSlug ? "active" : ""}">
+      ${mobile ? c.name : `
+        <span class="thumb"><img src="${firstImg(c.slug)}" alt="" loading="lazy" /></span>
+        <span class="meta"><strong>${c.name}</strong><span>${productCount(c.slug)} ürün</span></span>
+        <span class="dot"></span>`}
+    </button>`).join("");
+  document.getElementById("catList").innerHTML = html(false);
+  document.getElementById("mobileDock").innerHTML = html(true);
+}
+
+function setCategory(slug, push=true){
+  activeSlug = slug;
+  const cat = categories.find(c => c.slug === slug) || categories[0];
+  if(push) history.pushState({cat:slug}, "", `category.html?cat=${slug}`);
+  document.title = `${cat.name} | YuruDesign`;
+  document.getElementById("heroBg").src = cat.room;
+  document.getElementById("heroEyebrow").textContent = cat.name;
+  document.getElementById("heroTitle").textContent = cat.tagline;
+  document.getElementById("heroDesc").textContent = `${cat.name} — modüler parçalar, üye fiyatı, 12 ay taksit, ücretsiz kargo.`;
+  renderNav();
+  renderGrid();
+  if(window.gsap){
+    gsap.fromTo("#catHero .inner > *", {opacity:0,y:20}, {opacity:1,y:0,duration:.5,stagger:.06,ease:"power2.out"});
+  }
+}
+
+function setCollection(slug){
+  const col = window.YURU_CATALOG.collections.find(c => c.slug === slug);
+  document.title = `${col?.name || slug} Collection | YuruDesign`;
+  document.getElementById("heroBg").src = col?.image || categories[0].room;
+  document.getElementById("heroEyebrow").textContent = "Koleksiyon";
+  document.getElementById("heroTitle").textContent = `${col?.name || slug} Collection`;
+  document.getElementById("heroDesc").textContent = "Modüler seri parçalar — aynı renk ve malzeme dilinde bir arada.";
+  renderNav();
+  renderGrid();
+}
+
+function sortProducts(list){
+  const s = document.getElementById("sort").value;
+  const num = p => p.priceNum ?? YURU_parsePrice(p.now);
+  return [...list].sort((a,b) => {
+    if(s === "price-asc") return num(a) - num(b);
+    if(s === "price-desc") return num(b) - num(a);
+    if(s === "rating") return b.r - a.r;
+    return b.c - a.c;
+  });
+}
+
+function renderGrid(){
+  const list = sortProducts(productsForView());
+  document.getElementById("prodCount").textContent = list.length;
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  if(!list.length){ grid.innerHTML = ""; empty.hidden = false; return; }
+  empty.hidden = true;
+  grid.innerHTML = list.map(p => `
+    <article class="product-card">
+      <a href="${YURU_productUrl(p.id)}" class="ph">
+        ${p.badge ? `<span class="badge">${p.badge}</span>` : ""}
+        <span class="badge alt">Üye %10</span>
+        <img src="${p.img}" alt="${p.name}" loading="lazy" />
+      </a>
+      <div class="body">
+        <div class="stars"><span class="s">${YURU_stars(p.r)}</span> ${p.r}${p.c ? ` (${p.c})` : ""}</div>
+        <a href="${YURU_productUrl(p.id)}"><h3>${p.name}</h3></a>
+        <div class="price"><span class="old">${p.old} ₺</span><span class="now">${p.now} ₺</span></div>
+        <div class="inst">12× ${YURU_installment(p.now)} ₺</div>
+        <a class="atc" href="${YURU_productUrl(p.id)}">Sepete ekle</a>
+      </div>
+    </article>`).join("");
+}
+
+document.getElementById("sort").addEventListener("change", renderGrid);
+function onCategoryRailClick(e){
+  const btn = e.target.closest("[data-slug]");
+  if(!btn) return;
+  e.preventDefault();
+  setCategory(btn.dataset.slug);
+}
+["catList","mobileDock"].forEach(id=>{
+  document.getElementById(id).addEventListener("click", onCategoryRailClick);
+});
+
+renderNav();
+if(collectionSlug) setCollection(collectionSlug);
+else setCategory(activeSlug, false);
+window.addEventListener("popstate", e => {
+  const slug = (e.state && e.state.cat) || params.get("cat") || categories[0].slug;
+  setCategory(slug, false);
+});
+
+if(window.gsap && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+  gsap.registerPlugin(ScrollTrigger);
+  document.querySelectorAll(".grad-orb").forEach((orb,i)=>{
+    gsap.fromTo(orb,{x:0,y:0},{x:(i%2?80:-60),y:(i%2?-50:60),duration:7+i,ease:"sine.inOut",repeat:-1,yoyo:true});
+  });
+  gsap.fromTo("#heroBg", {scale:1.15}, {scale:1, ease:"none", scrollTrigger:{trigger:".cat-hero", start:"top top", end:"bottom top", scrub:true}});
+  gsap.from(".product-card", {y:24, opacity:0, duration:.5, stagger:.04, ease:"power2.out", scrollTrigger:{trigger:"#grid", start:"top 85%"}});
+}
+</script>
+</body>
+</html>

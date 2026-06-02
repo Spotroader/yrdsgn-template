@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<!--
+  YuruDesign Experience — Faz A/B/C/D
+  Skills: epic-design · gsap-interactions · emil-design-eng · impeccable-safe · page-cro
+  Stack: Lenis (~14k★) + GSAP ScrollTrigger — Awwwards-grade smooth scroll (darkroomengineering/lenis)
+  Palette derived from furniture assets (warm sand/wood), grain texture, no AI slop.
+-->
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<script src="theme.js"></script>
+<title>YuruDesign — Koleksiyon deneyimi</title>
+<meta name="description" content="Modüler mobilya kategorilerini canlı vitrinde keşfedin." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="impeccable.css" />
+<style>
+  /* page-specific */
+  .intro{
+    min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;
+    gap:clamp(32px,5vw,64px);padding:100px clamp(32px,6vw,80px) 60px;position:relative;
+  }
+  .intro-copy{position:relative;z-index:2}
+  .intro-copy p{margin-top:20px;font-size:17px;color:var(--text-muted);max-width:38ch;line-height:1.65}
+  .intro-actions{margin-top:32px;display:flex;flex-wrap:wrap;gap:12px}
+  .intro-visual{position:relative;z-index:2;justify-self:end;width:min(100%,560px)}
+  .intro-vitrine{transform:rotate(-1.2deg);box-shadow:0 48px 96px -32px rgba(0,0,0,.42)}
+  .intro-headline .intro-word{display:inline-block;overflow:hidden}
+  .intro-headline .intro-word i{font-style:normal;display:inline-block;transform:translateY(110%) rotate(4deg);opacity:0}
+  .scroll-cue{
+    position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--text-dim);z-index:3;
+  }
+  .scroll-cue span{width:1px;height:36px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease-in-out infinite}
+  @keyframes scrollPulse{0%,100%{transform:scaleY(.45);opacity:.4}50%{transform:scaleY(1);opacity:1}}
+
+  .stage-wrap{
+    position:relative;padding-bottom:8vh;
+    display:flex;flex-direction:column;gap:clamp(6px,0.8vh,12px);
+    width:100%;max-width:100%;box-sizing:border-box;
+  }
+  .scene-wrap{
+    position:relative;
+    --scene-glow:#FF6A33;
+    isolation:isolate;
+    width:100%;max-width:100%;
+    min-height:100vh;min-height:100dvh;
+  }
+  .scene-pin{
+    position:relative;
+    z-index:1;
+    height:100vh;height:100dvh;max-height:100dvh;
+    width:100%;max-width:100%;box-sizing:border-box;
+    display:grid;
+    grid-template-columns:minmax(0,0.48fr) minmax(0,1.52fr);
+    grid-template-rows:minmax(0,1fr) auto;
+    grid-template-areas:
+      "copy stage"
+      ".    strip";
+    align-items:center;
+    column-gap:clamp(24px,3.5vw,52px);
+    row-gap:clamp(8px,1.4vh,16px);
+    padding:clamp(68px,7vh,80px) clamp(24px,4vw,56px) clamp(14px,2vh,24px);
+    overflow:hidden;
+    border-radius:clamp(20px,3vw,32px);
+    border:1px solid var(--line);
+    background:color-mix(in srgb, var(--bg) 92%, transparent);
+    box-shadow:0 40px 80px -48px rgba(0,0,0,.35);
+  }
+
+  /* epic-design depth layers */
+  .scene-atmosphere{
+    position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+    border-radius:inherit;
+  }
+  .scene-room-bg{
+    position:absolute;inset:-18%;background-size:cover;background-position:center;
+    filter:blur(36px) saturate(1.2);opacity:.48;transform:scale(1.12);
+    will-change:transform,opacity;
+  }
+  .scene-noise{
+    position:absolute;inset:0;z-index:1;opacity:.04;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  .scene-glow-orb{
+    position:absolute;width:min(55vw,420px);height:min(55vw,420px);
+    top:8%;right:-8%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--scene-glow) 45%,transparent),transparent 68%);
+    opacity:.55;filter:blur(2px);
+  }
+  .scene-curtain{
+    position:absolute;inset:0;z-index:2;
+    background:var(--bg);
+    clip-path:inset(0 0 100% 0);
+    will-change:clip-path;
+  }
+
+  .scene-copy{grid-area:copy;position:relative;z-index:4;max-width:32ch;min-height:0;align-self:center;justify-self:start}
+  .scene-copy .tag{margin-bottom:14px}
+  .scene-copy p{margin:16px 0 22px;color:var(--text-muted);font-size:16px;line-height:1.62;max-width:38ch}
+  .scene-actions{display:flex;flex-wrap:wrap;gap:10px}
+  .scene-copy .price{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-top:16px}
+  .scene-copy .price .now{color:var(--text);font-size:18px;font-weight:600;margin-right:8px}
+  .scene-copy .price .old{text-decoration:line-through;opacity:.55;margin-right:6px}
+  .scene-copy .price .inst{color:var(--accent)}
+  .scene-benefit{margin-top:10px;font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.01em}
+  .scene-title{letter-spacing:-.02em;line-height:1.06}
+  .scene-title .title-word{
+    display:inline-block;opacity:.14;transform:translateY(.45em) scale(.94);
+    color:var(--text-muted);
+  }
+  .scene-title .title-word.is-lit{
+    opacity:1;transform:translateY(0) scale(1);
+    color:var(--text);
+    text-shadow:0 0 24px color-mix(in srgb,var(--scene-glow) 35%,transparent);
+  }
+
+  .scene-stage{
+    grid-area:stage;position:relative;z-index:4;
+    justify-self:stretch;align-self:center;
+    width:100%;min-height:0;
+  }
+  .scene-parallax{
+    perspective:1100px;transform-style:preserve-3d;transform-origin:center center;width:100%;
+    position:relative;
+  }
+  .scene-index{
+    position:absolute;top:-8px;right:0;z-index:6;
+    font-family:var(--mono);font-size:clamp(48px,6vw,72px);font-weight:500;line-height:1;
+    color:transparent;-webkit-text-stroke:1px color-mix(in srgb,var(--text) 18%,transparent);
+    pointer-events:none;user-select:none;
+  }
+  /* Immersive vitrine — single product-focused hero (no overlay) */
+  .scene-vitrine{
+    position:relative;width:100%;
+    aspect-ratio:4/5;
+    height:min(74vh,720px);
+    max-height:min(74vh,720px);
+    border-radius:clamp(18px,2.4vw,28px);
+    overflow:hidden;
+    box-shadow:0 40px 80px -28px rgba(0,0,0,.5),0 0 0 1px color-mix(in srgb,var(--line) 80%,transparent);
+    will-change:transform,opacity,clip-path,filter;
+    transform-origin:center center;
+    background:color-mix(in srgb,var(--scene-glow) 8%,var(--bg-elevated));
+  }
+  .scene-hero-img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 58%;
+    will-change:transform,filter;
+  }
+  .scene-vitrine-vignette{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:
+      radial-gradient(ellipse 85% 70% at 50% 55%, transparent 20%, rgba(0,0,0,.38) 100%),
+      linear-gradient(to top, rgba(0,0,0,.28) 0%, transparent 42%);
+  }
+  .scene-shine{
+    position:absolute;inset:-60%;z-index:4;pointer-events:none;
+    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.16) 50%,transparent 60%);
+    transform:translateX(-130%) skewX(-12deg);
+    mix-blend-mode:soft-light;
+  }
+  .badge-float{
+    position:absolute;top:14px;left:14px;z-index:6;
+    font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--badge-float-bg);color:var(--accent);padding:6px 10px;border-radius:6px;
+    border:1px solid var(--line);
+  }
+
+  .scene-strip{
+    grid-area:strip;position:relative;z-index:5;
+    display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;
+    width:100%;max-width:100%;margin:0;padding:2px 0 0;
+    justify-self:stretch;justify-content:flex-start;
+  }
+  .scene-strip::-webkit-scrollbar{display:none}
+  .strip-card{
+    flex:0 0 auto;width:148px;background:var(--bg-elevated);border:1px solid var(--line);
+    border-radius:var(--r-md);padding:8px;
+    transition:transform 200ms ease-out,border-color 200ms ease-out,box-shadow 200ms ease-out;
+    text-decoration:none;color:inherit;
+  }
+  .strip-card:hover{border-color:rgba(var(--accent-rgb),.42);transform:translateY(-2px);box-shadow:0 12px 28px -18px rgba(0,0,0,.35)}
+  .strip-card:active{transform:scale(.98) translateY(-1px)}
+  .strip-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .strip-card img{width:100%;aspect-ratio:1;border-radius:var(--r-sm);object-fit:cover;margin-bottom:6px;background:#f3f0ea}
+  .strip-card span{font-size:10px;color:var(--text-muted);display:block;line-height:1.3}
+  .strip-card b{font-size:11px;font-family:var(--mono);color:var(--text);margin-top:4px;display:block}
+  .strip-atc{
+    display:block;margin-top:8px;padding:6px 0;border-top:1px solid var(--line);
+    font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);
+  }
+
+  /* emil-design-eng: tactile nav + buttons */
+  .cat-btn{
+    transition:transform 180ms ease-out,background-color 180ms ease-out,color 180ms ease-out;
+  }
+  .cat-btn:active{transform:scale(.97)}
+  .cat-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn-accent,.btn-ghost-line{
+    transition:transform 180ms ease-out,background-color 180ms ease-out,border-color 180ms ease-out,color 180ms ease-out;
+  }
+  .btn-accent:active,.btn-ghost-line:active{transform:scale(.97)}
+
+  .topnav-scene{
+    font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:.06em;
+    max-width:min(28vw,168px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .topnav-cta-wrap{display:flex;align-items:center;gap:12px}
+
+  .outro-proof{
+    display:inline-flex;align-items:center;gap:8px;margin-bottom:8px;
+    font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.04em;
+  }
+
+  .outro{
+    text-align:center;padding:120px 32px 100px;position:relative;
+    border-top:1px solid var(--line);
+  }
+  .outro p{margin:16px auto 28px;color:var(--text-muted);max-width:42ch}
+  .outro .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .trust{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:28px;
+    font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:.04em}
+
+  @media(max-width:960px){
+    #stage .scene-strip{display:flex!important;grid-template-columns:unset!important;left:auto!important;right:auto!important}
+    .intro{grid-template-columns:1fr;text-align:left;padding-top:72px}
+    .intro-visual{justify-self:center;order:-1;width:min(92vw,400px)}
+    .scene-pin{
+      grid-template-columns:1fr;
+      grid-template-rows:auto auto auto;
+      grid-template-areas:"copy" "stage" "strip";
+      gap:12px;
+      padding:calc(56px + env(safe-area-inset-top,0px) + 10px) 5vw calc(78px + env(safe-area-inset-bottom,0px));
+      border-radius:18px;
+    }
+    .scene-stage{max-width:100%;justify-self:stretch;margin-left:0}
+    .scene-strip{justify-self:stretch}
+    .scene-vitrine{height:min(58vh,520px);max-height:min(58vh,520px);aspect-ratio:5/6}
+    .scene-index{font-size:40px;top:-4px}
+    .topnav-scene{display:none}
+  }
+  @media(max-height:740px){
+    .scene-benefit{display:none}
+    .scene-copy p{margin:12px 0 16px;font-size:15px}
+    .scene-vitrine{height:min(50vh,420px);max-height:min(50vh,420px)}
+  }
+  /* Lenis smooth scroll (epic-design / motion-system) */
+  html.lenis,html.lenis body{height:auto}
+  .lenis.lenis-smooth{scroll-behavior:auto!important}
+  .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+  .lenis.lenis-stopped{overflow:hidden}
+  .lenis.lenis-smooth iframe{pointer-events:none}
+
+  .outro h2,.outro p,.outro .btns,.outro .trust,.outro-proof{will-change:transform,opacity}
+
+  @media(prefers-reduced-motion:reduce){
+    .scene-vitrine,.scene-hero-img,.scene-copy>*,.scene-title .title-word,.scene-curtain,.scene-parallax,.scene-shine{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}
+    .scroll-cue{display:none}
+    .outro h2,.outro p,.outro .btns,.outro .trust,.outro-proof{opacity:1!important;transform:none!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="prog" id="prog"></div>
+
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <a class="logo-link" href="index.html" aria-label="YuruDesign">
+      <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+      <img class="logo-img logo-img--light" src="assets/logo-yurudesign.png?v=4" alt="" aria-hidden="true" width="132" height="51" decoding="async" />
+    </a>
+    <div class="sidebar-sub" id="sidebarSub">Koleksiyon</div>
+    <div class="theme-row">
+      <span>Tema</span>
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Tema değiştir">
+        <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="cat-list" id="catList" data-lenis-prevent></nav>
+  <div class="sidebar-foot">
+    <a class="btn-accent" href="category.html?cat=tv" style="justify-content:center;width:100%">Mağazaya git</a>
+    <a class="btn-ghost-line" href="index.html" style="justify-content:center;width:100%">Ana sayfa</a>
+  </div>
+</aside>
+
+<nav class="topnav" id="topnav">
+  <a class="logo-link topnav-logo" href="index.html" aria-label="YuruDesign">
+    <img class="logo-img logo-img--dark" src="assets/logo-yurudesign-on-dark.png?v=4" alt="YuruDesign" width="132" height="51" decoding="async" />
+    <img class="logo-img logo-img--light" src="assets/logo-yurudesign.png?v=4" alt="" aria-hidden="true" width="132" height="51" decoding="async" />
+  </a>
+  <div class="topnav-links">
+    <a href="experience.html" class="active">Deneyim</a>
+    <a href="category.html?cat=tv">Mağaza</a>
+    <a href="index.html#collections">Koleksiyonlar</a>
+  </div>
+  <div class="topnav-cta-wrap">
+    <span class="topnav-scene" id="topSceneLabel" aria-live="polite"></span>
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Tema değiştir">
+      <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <a class="btn-accent" id="topCta" href="#stage">Keşfet →</a>
+  </div>
+</nav>
+
+<nav class="mobile-dock" id="mobileDock" aria-label="Kategoriler"></nav>
+
+<main class="main with-mobile-bar">
+  <div class="section-grad" aria-hidden="true">
+    <div class="grad-orb a"></div>
+    <div class="grad-orb b"></div>
+    <div class="grad-orb c"></div>
+  </div>
+
+  <section class="intro" id="intro">
+    <div class="intro-copy">
+      <div class="tag">Üreticiden · Modüler mobilya</div>
+      <h1 class="headline-xl intro-headline" id="introHeadline">Odayı canlı<br>görün.</h1>
+      <p>Soldan kategori seçin veya kaydırın. Her parça, üretim hattından doğrudan vitrine — fiyat, taksit ve stok bilgisiyle.</p>
+      <div class="intro-actions">
+        <a class="btn-accent" href="#stage">Keşfet →</a>
+        <a class="btn-ghost-line" href="category.html?cat=tv">Tüm ürünler</a>
+      </div>
+    </div>
+    <div class="intro-visual">
+      <div class="scene-vitrine intro-vitrine" id="introVitrine">
+        <img class="scene-hero-img" id="introHero" src="" alt="Sedra TV ünitesi" fetchpriority="high" />
+        <div class="scene-vitrine-vignette"></div>
+        <div class="scene-shine"></div>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">Kaydır<span></span></div>
+  </section>
+
+  <div class="stage-wrap" id="stage"></div>
+
+  <section class="outro">
+    <div class="tag">Hazır mısınız?</div>
+    <p class="outro-proof">★ 4.8/5 · 3.200+ doğrulanmış yorum</p>
+    <h2 class="headline-lg">Sırada Hangi Oda Var?</h2>
+    <p>Üye fiyatları, 12 ay taksit ve Türkiye geneli ücretsiz kargo — aracısız, fabrikadan.</p>
+    <div class="btns">
+      <a class="btn-accent" href="category.html?cat=tv">Kataloğu keşfet →</a>
+      <a class="btn-ghost-line" href="index.html#bestsellers">Çok satanlara bak</a>
+    </div>
+    <div class="trust">
+      <span>Üreticiden fiyat</span><span>Ücretsiz kargo</span><span>2 yıl garanti</span><span>Koşulsuz iade</span>
+    </div>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script>
+const { categories, products } = window.YURU_CATALOG;
+const sceneDesc = {
+  tv: "Üç kapaklı bölme, masif ahşap ayaklar. Dağınıklığı saklayan denge.",
+  sehpa: "Modüler yüzey, gizli saklama. Odanın merkezi.",
+  konsol: "İnce gövde, geniş depolama.",
+  kitaplik: "Açık raf sistemi, dengeli ritim.",
+  kahve: "Modüler raf ve dolap. Kahve ritüelinize eşlik eden sıcak köşe.",
+  portmanto: "Antre düzeni — askılık, ayakkabılık ve ayna bir arada.",
+  makyaj: "Hollywood LED aydınlatma, akıllı çekmece düzeni.",
+  ayakkabilik: "Kompakt depolama, düzenli giriş alanı.",
+  "cok-amacli": "Mutfak, banyo ve antre için modüler dolap çözümleri.",
+  sifonyer: "Çekmeceli düzen, yatak odasında ferahlık.",
+  calisma: "Düzenli yüzey, kablo yönetimi.",
+  ofis: "Ergonomik masa ve depolama — ev ofisi veya kurumsal alan.",
+  komodin: "Yatak başında minimal çekmece ve raf.",
+  banyo: "Neme dayanıklı yüzeyler, akıllı depolama.",
+  "duvar-raf": "Dikey depolama — kitap, dekor ve köşe çözümleri."
+};
+
+function splitTitleWords(html){
+  return html.split(/(<br\s*\/?>)/i).map(part=>{
+    if(/^<br/i.test(part)) return part;
+    return part.split(/(\s+)/).map(tok=>{
+      if(!tok.trim()) return tok;
+      return `<span class="title-word">${tok}</span>`;
+    }).join("");
+  }).join("");
+}
+
+const isCoarse = matchMedia("(pointer: coarse)").matches;
+const pinScrollVh = isCoarse ? 1.48 : 1.72;
+const pinEnd = `+=${Math.round(pinScrollVh * 100)}%`;
+
+function wrapIntroWords(el){
+  if(!el) return [];
+  const out = [];
+  el.innerHTML = el.innerHTML.split(/(<br\s*\/?>)/i).map(part=>{
+    if(/^<br/i.test(part)) return part;
+    return part.split(/(\s+)/).map(tok=>{
+      if(!tok.trim()) return tok;
+      out.push(tok);
+      return `<span class="intro-word"><i>${tok}</i></span>`;
+    }).join("");
+  }).join("");
+  return el.querySelectorAll(".intro-word i");
+}
+
+function vitrineHeroPos(){
+  return "center 58%";
+}
+
+function featuredShortName(p, catName){
+  if(!p) return catName;
+  const brand = p.name.match(/^(Sedra|Nord|Dune|Mood|Future|Ocean|Monroe|Royce|Vario|Craft|Oasis|Wisdom|Tywin|Bremen|Shelf|Vitale|More|Liora|Traft)/i);
+  if(brand) return brand[1];
+  const code = p.name.match(/\b([A-Z]{2}\d+[A-Z-]*)\b/);
+  if(code) return code[1];
+  return p.name.split(/\s+/).slice(0, 2).join(" ");
+}
+
+const scenes = categories.map((cat, idx) => {
+  const featured = products.find(p => p.cat === cat.slug);
+  const strip = products.filter(p => p.cat === cat.slug).slice(1, 3);
+  const title = cat.tagline.replace(/ (.+)/, "<br>$1");
+  const short = featuredShortName(featured, cat.name);
+  return {
+    cat: cat.name,
+    slug: cat.slug,
+    pid: featured?.id || "",
+    short,
+    ctaLabel: featured ? `${short} incele →` : `${cat.name} keşfet →`,
+    t: splitTitleWords(title),
+    d: sceneDesc[cat.slug] || cat.tagline,
+    img: featured?.img || cat.image,
+    room: cat.room || cat.image,
+    hero: cat.room || cat.image,
+    heroPos: vitrineHeroPos(),
+    glow: cat.glow || "#FF6A33",
+    variant: idx % 3,
+    old: featured?.old || "",
+    now: featured?.now || "",
+    inst: featured ? YURU_installment(featured.now) : "",
+    badge: featured?.badge || "",
+    strip: strip.map(p => ({ id: p.id, n: p.name.split(" ").slice(0, 4).join(" "), img: p.img, p: p.now }))
+  };
+});
+
+const introScene = scenes[0];
+if(introScene){
+  const introHero = document.getElementById("introHero");
+  if(introHero){
+    introHero.src = introScene.hero;
+    introHero.alt = introScene.cat;
+    introHero.style.objectPosition = introScene.heroPos;
+  }
+}
+
+document.getElementById("stage").innerHTML = scenes.map((s,i)=>`
+  <article class="scene-wrap scene" id="scene-${i}" data-i="${i}" style="--scene-glow:${s.glow}">
+    <div class="scene-pin">
+      <div class="scene-atmosphere depth-0" aria-hidden="true">
+        <div class="scene-room-bg" style="background-image:url('${s.room}')"></div>
+        <div class="scene-glow-orb"></div>
+        <div class="scene-noise"></div>
+        <div class="scene-curtain"></div>
+      </div>
+      <div class="scene-copy depth-4">
+        <div class="tag">${s.cat}</div>
+        <h2 class="headline-lg scene-title">${s.t}</h2>
+        <p>${s.d}</p>
+        <div class="scene-actions">
+          <a class="btn-accent" href="${s.pid ? `product.html?id=${s.pid}` : `category.html?cat=${s.slug}`}">${s.ctaLabel}</a>
+          <a class="btn-ghost-line" href="category.html?cat=${s.slug}">Tüm ${s.cat.toLowerCase()}</a>
+        </div>
+        <div class="price">${s.old ? `<span class="old">${s.old} ₺</span>` : ""}<span class="now">${s.now} ₺</span><span class="inst">12× ${s.inst} ₺</span></div>
+        <p class="scene-benefit">Ücretsiz kargo · 2 yıl garanti · Koşulsuz iade</p>
+      </div>
+      <div class="scene-stage depth-3" data-variant="${s.variant}">
+        <div class="scene-parallax">
+          <span class="scene-index" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+          <div class="scene-vitrine scene-product">
+            <img class="scene-hero-img" src="${s.hero}" alt="${s.cat}" style="object-position:${s.heroPos}" loading="${i<2?'eager':'lazy'}" ${i<2?'fetchpriority="high"':''} />
+            <div class="scene-vitrine-vignette"></div>
+            <div class="scene-shine"></div>
+            ${s.badge?`<span class="badge-float">${s.badge}</span>`:""}
+          </div>
+        </div>
+      </div>
+      <div class="scene-strip depth-4" data-lenis-prevent>
+        ${s.strip.map(p=>`<a class="strip-card" href="${YURU_productUrl(p.id)}"><img src="${p.img}" alt="${p.n}" loading="lazy" /><span>${p.n}</span><b>${p.p} ₺</b><span class="strip-atc">Sepete ekle →</span></a>`).join("")}
+      </div>
+    </div>
+  </article>`).join("");
+
+function preloadSceneAssets(fromIdx = 0){
+  const start = Math.max(0, fromIdx);
+  const end = Math.min(scenes.length, start + 4);
+  for(let i = start; i < end; i++){
+    [scenes[i].hero, scenes[i].room, scenes[i].img].forEach(src=>{
+      if(!src) return;
+      const img = new Image();
+      img.src = src;
+    });
+  }
+}
+preloadSceneAssets(0);
+
+function renderNav(){
+  const sub = document.getElementById("sidebarSub");
+  if(sub) sub.textContent = `Koleksiyon · ${scenes.length} kategori`;
+  const mk = mobile => scenes.map((s,i)=>`
+    <button type="button" class="cat-btn" data-i="${i}">
+      ${mobile ? s.cat : `<span class="thumb"><img src="${s.img}" alt="" loading="lazy" /></span><span class="meta"><strong>${s.cat}</strong><span>${s.now} ₺</span></span><span class="dot"></span>`}
+    </button>`).join("");
+  document.getElementById("catList").innerHTML = mk();
+  document.getElementById("mobileDock").innerHTML = mk(true);
+}
+renderNav();
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let activeIdx = -1, sceneTriggers = [], jumping = false, lenis = null;
+
+function getScrollY(){
+  if(lenis && typeof lenis.scroll === "number") return lenis.scroll;
+  return window.scrollY;
+}
+
+function animateScrollTo(y, duration, onComplete){
+  if(Math.abs(y - getScrollY()) < 4){ onComplete?.(); return; }
+  if(lenis){
+    lenis.scrollTo(y, {
+      duration: duration || 0,
+      easing: t => 1 - Math.pow(1 - t, 3),
+      lock: true,
+      onComplete: ()=>{ ScrollTrigger?.update?.(); onComplete?.(); }
+    });
+    return;
+  }
+  if(window.gsap){
+    const start = getScrollY();
+    const proxy = { scroll: start };
+    gsap.to(proxy, {
+      scroll: y, duration, ease: "power2.out",
+      onUpdate: ()=>{ window.scrollTo(0, proxy.scroll); ScrollTrigger?.update?.(); },
+      onComplete
+    });
+    return;
+  }
+  window.scrollTo({ top: y, behavior: duration > 0 ? "smooth" : "auto" });
+  setTimeout(()=> onComplete?.(), duration > 0 ? duration * 1000 : 0);
+}
+
+function rebuildFallbackSceneTriggers(){
+  sceneTriggers = scenes.map((_, i) => {
+    const el = document.getElementById("scene-" + i);
+    if(!el) return null;
+    const start = el.offsetTop;
+    const end = start + el.offsetHeight;
+    return { start, end, fallback: true };
+  });
+}
+
+function sceneScrollTarget(i, ratio = 0.44){
+  const st = sceneTriggers[i];
+  if(!st || st.start == null) return null;
+  return st.start + (st.end - st.start) * ratio;
+}
+
+function setActive(i){
+  activeIdx = i;
+  document.querySelectorAll(".cat-btn").forEach(b=>{
+    const on = +b.dataset.i === i;
+    b.classList.toggle("active", on);
+    if(on) b.setAttribute("aria-current", "true");
+    else b.removeAttribute("aria-current");
+  });
+  const cta = document.getElementById("topCta");
+  const label = document.getElementById("topSceneLabel");
+  if(i < 0){
+    if(cta){ cta.href = "#stage"; cta.textContent = "Keşfet →"; }
+    if(label) label.textContent = "";
+    return;
+  }
+  const s = scenes[i];
+  if(cta){
+    cta.href = s.pid ? YURU_productUrl(s.pid) : YURU_categoryUrl(s.slug);
+    cta.textContent = s.ctaLabel;
+  }
+  if(label) label.textContent = `${i + 1}/${scenes.length} · ${s.cat}`;
+}
+
+function goToScene(i){
+  if(i < 0 || i >= scenes.length) return;
+  setActive(i);
+  let target = sceneScrollTarget(i);
+  if(target == null){
+    rebuildFallbackSceneTriggers();
+    target = sceneScrollTarget(i);
+  }
+  if(target == null){
+    document.getElementById("scene-" + i)?.scrollIntoView({
+      behavior: reduce ? "auto" : "smooth",
+      block: "start"
+    });
+    return;
+  }
+  jumping = true;
+  animateScrollTo(target, reduce ? 0 : 0.65, ()=>{
+    jumping = false;
+    ScrollTrigger?.update?.();
+  });
+}
+
+function onCategoryNavClick(e){
+  const b = e.target.closest(".cat-btn");
+  if(!b || b.disabled) return;
+  e.preventDefault();
+  goToScene(+b.dataset.i);
+}
+
+document.getElementById("catList").addEventListener("click", onCategoryNavClick);
+document.getElementById("mobileDock").addEventListener("click", onCategoryNavClick);
+rebuildFallbackSceneTriggers();
+setActive(-1);
+
+function bindTopnavScroll(){
+  const nav = document.getElementById("topnav");
+  const sync = ()=> nav?.classList.toggle("scrolled", window.scrollY > 20);
+  sync();
+  if(lenis) lenis.on("scroll", sync);
+  else addEventListener("scroll", sync, { passive: true });
+}
+
+if(window.gsap && !reduce){
+  try {
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* epic-design: Lenis ↔ GSAP ScrollTrigger ticker sync (darkroomengineering/lenis) */
+  if(window.Lenis){
+    lenis = new Lenis({
+      autoRaf: false,
+      duration: isCoarse ? 0.95 : 1.15,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      smoothWheel: true,
+      touchMultiplier: isCoarse ? 1.35 : 1.1,
+      wheelMultiplier: 0.9,
+      infinite: false
+    });
+    lenis.on("scroll", ScrollTrigger.update);
+    ScrollTrigger.scrollerProxy(document.documentElement, {
+      scrollTop(value){
+        if(arguments.length){
+          lenis.scrollTo(value, { immediate: true });
+        }
+        return lenis.scroll;
+      },
+      getBoundingClientRect(){
+        return { top: 0, left: 0, width: innerWidth, height: innerHeight };
+      },
+      pinType: "fixed"
+    });
+    ScrollTrigger.addEventListener("refresh", () => lenis.resize());
+    const lenisTick = time => lenis.raf(time * 1000);
+    gsap.ticker.add(lenisTick);
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* gsap-interactions: gradient orb drift */
+  document.querySelectorAll(".grad-orb").forEach((orb,i)=>{
+    gsap.fromTo(orb,{x:0,y:0},{x:(i%2?120:-100),y:(i%2?-80:90),duration:6+i*2,ease:"sine.inOut",repeat:-1,yoyo:true});
+    gsap.fromTo(orb,{scale:1},{scale:1.25,duration:5+i,delay:i,ease:"sine.inOut",repeat:-1,yoyo:true});
+  });
+
+  gsap.to("#prog",{scaleX:1,ease:"none",scrollTrigger:{trigger:document.body,start:"top top",end:"bottom bottom",scrub:.25}});
+
+  const introWords = wrapIntroWords(document.getElementById("introHeadline"));
+  gsap.from(".intro-copy .tag,.intro-copy p,.intro-actions > *",{
+    y:32,opacity:0,duration:.85,stagger:.09,ease:"power3.out",delay:.08
+  });
+  gsap.from(introWords,{
+    yPercent:120,rotate:6,opacity:0,duration:1,stagger:.06,ease:"power4.out",delay:.15
+  });
+  gsap.from("#introVitrine",{
+    scale:.82,y:60,rotateY:-14,opacity:0,duration:1.15,ease:"power3.out",delay:.22
+  });
+  gsap.from("#introHero",{
+    scale:1.22,filter:"blur(10px) brightness(0.85)",duration:1.2,ease:"power3.out",delay:.28
+  });
+  gsap.to("#introVitrine .scene-shine",{
+    x:"220%",duration:1.4,ease:"power2.inOut",delay:1.1,repeat:-1,repeatDelay:4.5
+  });
+  gsap.to("#introVitrine",{
+    y:-14,rotateY:3,duration:4.5,ease:"sine.inOut",repeat:-1,yoyo:true,delay:1.4
+  });
+  gsap.to(".intro-copy",{
+    y:-50,opacity:0,scale:.98,ease:"none",
+    scrollTrigger:{trigger:"#intro",start:"top top",end:"bottom top",scrub:.8}
+  });
+  gsap.to("#introVitrine",{
+    scale:1.08,y:-80,rotateY:-6,ease:"none",
+    scrollTrigger:{trigger:"#intro",start:"top top",end:"bottom top",scrub:.8}
+  });
+  gsap.to(".scroll-cue",{opacity:0,y:12,ease:"none",scrollTrigger:{trigger:"#intro",start:"top top",end:"center top",scrub:true}});
+
+  function addHoldFloat(tl, target, at){
+    tl.to(target, { y: "-=8", duration: 0.2, ease: "sine.inOut" }, at)
+      .to(target, { y: "+=16", duration: 0.28, ease: "sine.inOut" }, at + 0.2)
+      .to(target, { y: "-=8", duration: 0.2, ease: "sine.inOut" }, at + 0.48);
+  }
+
+  const pinMain = document.querySelector(".main");
+  function railWidth(){
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rail-w")) || 0;
+  }
+  function alignPinnedScene(st){
+    if(!st?.pin || !st.isActive) return;
+    const rail = railWidth();
+    const w = pinMain?.offsetWidth ?? (innerWidth - rail);
+    gsap.set(st.pin, { left: rail, width: w, maxWidth: w, right: "auto", zIndex: 40 + (st.trigger?.dataset?.i ? +st.trigger.dataset.i : 0) });
+  }
+
+  function stackScenePin(st, active){
+    if(!st?.pin) return;
+    const idx = st.trigger?.dataset?.i != null ? +st.trigger.dataset.i : 0;
+    gsap.set(st.pin, { zIndex: active ? 40 + idx : 1 });
+  }
+
+  function buildSceneTimeline(wrap, s, i){
+    const pin = wrap.querySelector(".scene-pin");
+    const vitrine = wrap.querySelector(".scene-vitrine");
+    const heroImg = wrap.querySelector(".scene-hero-img");
+    const parallax = wrap.querySelector(".scene-parallax");
+    const sceneIndex = wrap.querySelector(".scene-index");
+    const copyKids = wrap.querySelectorAll(".scene-copy > *:not(.scene-title)");
+    const titleWords = wrap.querySelectorAll(".title-word");
+    const stripCards = wrap.querySelectorAll(".strip-card");
+    const curtain = wrap.querySelector(".scene-curtain");
+    const roomBg = wrap.querySelector(".scene-room-bg");
+    const glowOrb = wrap.querySelector(".scene-glow-orb");
+    const shine = wrap.querySelector(".scene-shine");
+    const badge = wrap.querySelector(".badge-float");
+    const variant = s.variant;
+
+    const tl = gsap.timeline({
+      scrollTrigger:{
+        trigger: wrap, start: "top top", end: pinEnd,
+        pin: pin, pinSpacing: true, pinReparent: true,
+        pinnedContainer: pinMain || undefined,
+        scrub: lenis ? 0.75 : 0.45, anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onRefresh(self){ alignPinnedScene(self); },
+        onToggle(self){
+          alignPinnedScene(self);
+          stackScenePin(self, self.isActive);
+        },
+        onEnter(self){
+          if(!jumping) setActive(i);
+          preloadSceneAssets(i);
+          stackScenePin(self, true);
+          alignPinnedScene(self);
+        },
+        onEnterBack(self){
+          if(!jumping) setActive(i);
+          preloadSceneAssets(i);
+          stackScenePin(self, true);
+          alignPinnedScene(self);
+        },
+        onLeave(self){
+          stackScenePin(self, false);
+          if(parallax) gsap.set(parallax, { rotateX: 0, rotateY: 0 });
+        },
+        onLeaveBack(self){
+          stackScenePin(self, false);
+          if(parallax) gsap.set(parallax, { rotateX: 0, rotateY: 0 });
+        },
+      }
+    });
+    sceneTriggers[i] = tl.scrollTrigger;
+
+    gsap.set(curtain, { clipPath: "inset(0 0 100% 0)" });
+    gsap.set(vitrine, { clipPath: "inset(28% 22% 28% 22% round 16px)", scale: 0.92, rotateY: -6 });
+    gsap.set(copyKids, { opacity: 0, y: 32, filter: "blur(6px)" });
+    gsap.set(titleWords, { opacity: 0.1, y: 24, scale: 0.92 });
+    gsap.set(stripCards, { opacity: 0, y: 40, scale: 0.86 });
+    gsap.set(shine, { x: "-130%" });
+    if(sceneIndex) gsap.set(sceneIndex, { opacity: 0.15, y: 20, scale: 0.9 });
+    if(badge) gsap.set(badge, { opacity: 0, y: -16, scale: 0.75 });
+    if(glowOrb) gsap.set(glowOrb, { scale: 0.7, opacity: 0.25 });
+    if(heroImg) gsap.set(heroImg, { scale: 1.28, filter: "blur(8px) brightness(0.82)" });
+
+    tl.to(curtain, { clipPath: "inset(0 0 0 0)", duration: 0.12, ease: "power4.out" }, 0)
+      .to(vitrine, {
+        clipPath: "inset(0% 0% 0% 0% round 28px)",
+        scale: 1, rotateY: 0, duration: 0.28, ease: "power4.out"
+      }, 0.02);
+
+    if(variant === 0){
+      tl.to(heroImg, { scale: 1.06, filter: "blur(0px) brightness(1)", duration: 0.34, ease: "power3.out" }, 0.04)
+        .to(shine, { x: "220%", duration: 0.22, ease: "power2.inOut" }, 0.14);
+    } else if(variant === 1){
+      gsap.set(heroImg, { x: 24, scale: 1.32, filter: "blur(10px) brightness(0.8)" });
+      tl.to(heroImg, { x: 0, scale: 1.06, filter: "blur(0px) brightness(1)", duration: 0.32, ease: "power3.out" }, 0.06)
+        .to(shine, { x: "220%", duration: 0.24, ease: "power2.inOut" }, 0.16);
+    } else {
+      gsap.set(heroImg, { scale: 1.38, opacity: 0.75, filter: "blur(12px) brightness(0.75)" });
+      tl.to(heroImg, { scale: 1.06, opacity: 1, filter: "blur(0px) brightness(1)", duration: 0.34, ease: "power2.out" }, 0.04)
+        .to(shine, { x: "220%", duration: 0.2, ease: "power2.inOut" }, 0.18);
+    }
+
+    tl.to(titleWords, {
+      opacity: 1, y: 0, scale: 1, duration: 0.12, stagger: 0.045, ease: "power3.out",
+      onStart(){ titleWords.forEach(w=> w.classList.add("is-lit")); }
+    }, 0.1)
+      .to(copyKids, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.14, stagger: 0.04, ease: "power2.out" }, 0.14)
+      .to(stripCards, { opacity: 1, y: 0, scale: 1, duration: 0.16, stagger: 0.07, ease: "back.out(1.6)" }, 0.18);
+    if(badge) tl.to(badge, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.5)" }, 0.16);
+    if(sceneIndex) tl.to(sceneIndex, { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: "power2.out" }, 0.12);
+
+    /* hold — ken burns ürün crop */
+    if(heroImg) tl.to(heroImg, { scale: 1.12, duration: 0.42, ease: "none" }, 0.28);
+    tl.to(roomBg, { scale: 1.08, opacity: 0.55, duration: 0.45, ease: "none" }, 0.28);
+    if(glowOrb) tl.to(glowOrb, { scale: 1.25, opacity: 0.72, duration: 0.4, ease: "sine.inOut" }, 0.3);
+    if(heroImg) addHoldFloat(tl, heroImg, 0.38);
+
+    /* exit — sıkı bitiş, boş scroll alanını azalt */
+    if(heroImg) tl.to(heroImg, {
+      scale: 1.16, opacity: 0, filter: "blur(6px) brightness(1.1)",
+      duration: 0.22, ease: "power3.in"
+    }, 0.78);
+    tl.to(vitrine, {
+        scale: 1.1, y: -28, rotateX: 6, opacity: 0,
+        clipPath: "inset(12% 18% 12% 18% round 20px)",
+        duration: 0.22, ease: "power3.in"
+      }, 0.8)
+      .to(titleWords, { opacity: 0, y: -18, scale: 0.94, duration: 0.12, stagger: 0.03, ease: "power2.in" }, 0.82)
+      .to(copyKids, { opacity: 0, y: -20, filter: "blur(4px)", duration: 0.12, stagger: 0.03, ease: "power2.in" }, 0.84)
+      .to(stripCards, { opacity: 0, y: 24, scale: 0.9, duration: 0.12, stagger: 0.04, ease: "power2.in" }, 0.82);
+    if(badge) tl.to(badge, { opacity: 0, y: -12, scale: 0.85, duration: 0.1, ease: "power2.in" }, 0.84);
+    tl.to(curtain, { clipPath: "inset(0 0 100% 0)", duration: 0.16, ease: "power4.in" }, 0.86);
+    if(glowOrb) tl.to(glowOrb, { opacity: 0.15, scale: 0.85, duration: 0.18, ease: "power2.in" }, 0.84);
+    if(roomBg) tl.to(roomBg, { opacity: 0.2, scale: 1.2, duration: 0.18, ease: "power2.in" }, 0.82);
+  }
+
+  scenes.forEach((s, i)=> buildSceneTimeline(document.getElementById("scene-"+i), s, i));
+
+  /* gsap-interactions: snap to scene sweet spots */
+  ScrollTrigger.create({
+    trigger: "#stage",
+    start: "top top",
+    end: "bottom bottom",
+    snap: {
+      snapTo: progress => {
+        const max = ScrollTrigger.maxScroll(window);
+        if(!max || !sceneTriggers.length) return progress;
+        const targets = sceneTriggers.map(st => (st.start + (st.end - st.start) * 0.44) / max);
+        let closest = targets[0];
+        let minDist = Math.abs(progress - closest);
+        for(const t of targets){
+          const d = Math.abs(progress - t);
+          if(d < minDist){ minDist = d; closest = t; }
+        }
+        return minDist < 0.065 ? closest : progress;
+      },
+      duration: { min: 0.28, max: 0.72 },
+      delay: 0.06,
+      ease: "power2.inOut"
+    }
+  });
+
+  /* mouse tilt on parallax wrapper — scroll anim stays on .scene-product */
+  if(!isCoarse){
+    document.querySelectorAll(".scene-stage").forEach(stage=>{
+      const parallax = stage.querySelector(".scene-parallax");
+      if(!parallax) return;
+      stage.addEventListener("mousemove", e=>{
+        const r = stage.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        gsap.to(parallax, {
+          rotateY: x * 10, rotateX: -y * 7,
+          duration: 0.45, ease: "power2.out", overwrite: "auto"
+        });
+      });
+      stage.addEventListener("mouseleave", ()=>{
+        gsap.to(parallax, { rotateY: 0, rotateX: 0, duration: 0.7, ease: "power2.out" });
+      });
+    });
+  }
+
+  ScrollTrigger.create({trigger:"#intro",start:"top top",end:"bottom top",onLeaveBack:()=>setActive(-1)});
+
+  /* epic-design: outro perspective reveal */
+  gsap.from(".outro-proof,.outro h2,.outro > p:not(.outro-proof),.outro .btns,.outro .trust",{
+    y: 48,
+    opacity: 0,
+    duration: 0.9,
+    stagger: 0.1,
+    ease: "power3.out",
+    scrollTrigger: {
+      trigger: ".outro",
+      start: "top 78%",
+      toggleActions: "play none none reverse"
+    }
+  });
+  gsap.from(".outro h2",{
+    scale: 0.94,
+    transformOrigin: "center top",
+    duration: 1.1,
+    ease: "power3.out",
+    scrollTrigger: {
+      trigger: ".outro",
+      start: "top 72%",
+      scrub: lenis ? 0.6 : 0.35
+    }
+  });
+
+  addEventListener("load", ()=>{
+    ScrollTrigger.refresh(true);
+    if(!sceneTriggers.some(Boolean)) rebuildFallbackSceneTriggers();
+  });
+  } catch(err){
+    console.warn("Experience scroll init failed; category nav uses fallback.", err);
+    rebuildFallbackSceneTriggers();
+  }
+} else {
+  document.querySelectorAll(".scene-vitrine,.scene-hero-img,.scene-copy>*,.scene-strip,.strip-card,.title-word,.scene-parallax").forEach(el=>{
+    el.style.opacity=1; el.style.transform="none"; el.style.filter="none"; el.style.clipPath="none";
+  });
+  document.querySelectorAll(".scene-curtain").forEach(el=>{ el.style.clipPath="none"; el.style.display="none"; });
+  rebuildFallbackSceneTriggers();
+  setActive(-1);
+}
+bindTopnavScroll();
+</script>
+</body>
+</html>
